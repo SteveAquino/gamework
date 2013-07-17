@@ -4,6 +4,7 @@ module Gamework
     	# Sets a 'class instance variable', which
     	# acts like a class variable that is unique
     	# among all various subclasses
+    	
       base.instance_variable_set "@collection", []
       base.extend ClassMethods
     end
