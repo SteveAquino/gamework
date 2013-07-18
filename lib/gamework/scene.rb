@@ -15,6 +15,10 @@ module Gamework
 		end
 
 		def update
+			# Updates the current Scene instance
+			# at the front of the collection
+			
+			first.update unless first.nil?
 		end
 		
 		def draw

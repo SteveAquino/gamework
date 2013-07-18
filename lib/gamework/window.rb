@@ -7,10 +7,10 @@ module Gamework
 
 		Width  = 1000
 		Height = 1000
-		# Center = [(Width/2), (Height/2)]
+		Center = [(Width/2), (Height/2)]
 
-		def initialize
-			super Width, Height, false
+		def initialize(width=Width, height=Height, fullscreen=true, update_interval=16.666666)
+			super(width, height, fullscreen, update_interval)
 			self.caption = "This is a Gamework Game!"
 		end
 
@@ -18,7 +18,7 @@ module Gamework
 			# Called 60 times per second from
 			# Gosu::Window class
 
-			# Scene.current.update
+			Scene.update
 		end
 
 		def draw
