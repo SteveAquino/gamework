@@ -1,6 +1,25 @@
 require_relative '../../spec_helper'
  
 describe Gamework::App do
+	describe ".config" do
+		it "should allow block style configuration" do
+			Gamework::App.config do |c|
+				c.width  = 1000
+				c.height = 1000
+				c.fullscreen = false
+			end
+
+			Gamework::App.width.should eq(1000)
+			Gamework::App.height.should eq(1000)
+			Gamework::App.fullscreen.should eq(false)
+		end
+
+		it "raises and error after window is drawn" do
+			Gamework::App.stub("showing?") { true }
+			expect {Gamework::App.config {|c| c.width = 100} }.to raise_error
+		end
+	end
+
 	describe ".start" do
 		it "creates a window object and calls show" do
 			@called = false

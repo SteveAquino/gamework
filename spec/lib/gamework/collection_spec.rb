@@ -15,10 +15,21 @@ describe Gamework::Collection do
 			class MockClass
 				include Gamework::Collection
 			end
-			%w(first count select map).each do |method|
+			%w(all first count select map).each do |method|
 				MockClass.respond_to?(method).should be_true
 			end
-		end		
+		end
+
+		it "are available to subclasses" do
+			class MockClass
+				include Gamework::Collection
+			end
+			class MockSubClass < MockClass
+			end
+			%w(all first count select map).each do |method|
+				MockSubClass.respond_to?(method).should be_true
+			end
+		end
 	end
 
 	describe ".create" do
