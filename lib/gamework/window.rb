@@ -6,7 +6,7 @@ module Gamework
 		# either :isometric (top-down) or :platform (horizontal)
 
 
-		def initialize(width, height, fullscreen, update_interval=16.666666)
+		def initialize(width, height, fullscreen=false, update_interval=16.666666)
 			super(width, height, fullscreen, update_interval)
 			self.caption = "This is a Gamework Game!"
 		end

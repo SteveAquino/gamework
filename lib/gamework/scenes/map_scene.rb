@@ -5,10 +5,10 @@ module Gamework
 		# NPCs, Animations, and MapEvents
 
 		attr_reader   :width, :height, :camera_x, :camera_y,
-									:player, :animation_handler
+									:tileset, :player, :animation_handler
 
 		def initialize
-			# super
+			super
 
 			# The scrolling position is relative to the
 			# top left corner of the screen.

@@ -71,7 +71,7 @@ module Gamework
 
 				# First check for and remove the current Scene
 				# if it's marked for deletion
-				shift if current.ended?
+				shift if current and current.ended?
 
 				# Update the current Scene in the collection
 				current and current.update
@@ -99,9 +99,11 @@ module Gamework
 
 			def next(scene=nil)
 				# Marks the current scene for deletion
-				# and optionally takes 
+				# and optionally takes another Class
+				# that inherits from Gamework::Scene to
+				# append to the array
 
-				current.end_scene
+				current and current.end_scene
 				scene.create if scene.is_a?(Gamework::Scene)
 			end
 		end
