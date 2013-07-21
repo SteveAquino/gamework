@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Gamework::VERSION
   spec.authors       = ["Steve Aquino"]
   spec.email         = ["aquino.steve@gmail.com"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
+  spec.description   = %q{An MVC Game Making Framework}
+  spec.summary       = %q{An easy to use MVC game making framework built on Gosu.}
   spec.homepage      = ""
   spec.license       = "MIT"
 

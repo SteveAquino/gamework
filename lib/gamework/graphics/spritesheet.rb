@@ -1,5 +1,5 @@
 module Gamework
-	class Spritesheet
+  class Spritesheet
 
-	end
+  end
 end

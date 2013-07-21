@@ -1,4 +1,4 @@
 module Gamework
-	class MenuScene < Gamework::Scene
-	end
+  class MenuScene < Gamework::Scene
+  end
 end
