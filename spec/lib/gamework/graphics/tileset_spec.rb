@@ -69,15 +69,34 @@ describe Gamework::Tileset do
           @drawn = true
         end
       end
-      grass1 = MockSprite.new()
-      grass2 = MockSprite.new()
-      bush   = MockSprite.new()
-      tree   = MockSprite.new()
+      grass1 = MockSprite.new
+      grass2 = MockSprite.new
+      bush   = MockSprite.new
+      tree   = MockSprite.new
       tileset.instance_variable_set "@sprites", [grass1,grass2,bush,tree]
 
-      x,y,z  = 0,64,0
       tileset.draw_tile(2,0)
       bush.drawn.should eq(true)
+    end
+  end
+
+  describe "#draw" do
+    it "calls draw on each tile on the map" do
+      tileset = Gamework::Tileset.new(32, 32, "test.png")
+      tiles   = [[0,1,2,3],[1,2,3,0],[2,3,1,0],[3,0,1,2]]
+      tileset.instance_variable_set "@tiles", tiles
+      class CountSprite
+        attr_reader :draws
+        def draw(a,b,c)
+          @draws ||= 0
+          @draws += 1
+        end
+      end
+      sprites = [CountSprite.new,CountSprite.new,CountSprite.new,CountSprite.new]
+      tileset.instance_variable_set "@sprites", sprites
+
+      tileset.draw
+      sprites.each {|s| s.draws.should eq(4) }
     end
   end
 end

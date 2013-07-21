@@ -7,7 +7,7 @@ describe Gamework::Collection do
         include Gamework::Collection
       end
       MockClass.all.should eq([])
-    end    
+    end
   end
 
   describe "Enumberable methods" do
@@ -39,7 +39,7 @@ describe Gamework::Collection do
       end
       mock = MockClass.create
       MockClass.all.should eq([mock])
-    end    
+    end
 
     it "appends classes to their own collection" do
       class Mock1
@@ -90,6 +90,18 @@ describe Gamework::Collection do
       
       MockClass.shift.should eq(mock)
       MockClass.count.should eq(5)
+    end
+  end
+
+  describe ".clear" do
+    it "clears the collection and returns an empty array" do
+      class MockClass
+        include Gamework::Collection
+      end
+
+      5.times { MockClass.create }
+      
+      MockClass.clear.should eq([])
     end
   end
 end

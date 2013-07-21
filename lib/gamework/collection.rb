@@ -13,6 +13,7 @@ module Gamework
       include Enumerable
 
       def each(&block)
+        @collection ||= []
         @collection.each(&block)
       end
 
@@ -33,6 +34,10 @@ module Gamework
 
       def shift
         @collection.shift
+      end
+
+      def clear
+        @collection.clear
       end
     end
   end

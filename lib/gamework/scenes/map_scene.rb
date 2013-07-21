@@ -1,6 +1,6 @@
 module Gamework
   class MapScene < Gamework::Scene
-    # MapScenes are the heart of gameplay for isometric
+    # MapScenes are the heart of gameplay for Gamework
     # games.  MapScenes hold the instance of the player,
     # NPCs, Animations, and MapEvents
 
@@ -45,7 +45,7 @@ module Gamework
         # Npc.draw
         # Event.draw
         # @animation_handler.draw
-        @tileset.draw
+        @tileset.draw if @tileset
         super
       end
     end

@@ -8,7 +8,17 @@ module Gamework
     end
 
     def draw
-      draw_tiles
+      # Very primitive drawing function:
+      # Draws all the tiles, some off-screen, some on-screen.
+
+      height = @tiles.size
+      width  = @tiles[0].size
+
+      height.times do |y|
+        width.times do |x|
+          draw_tile(x,y)
+        end
+      end
     end
 
     def make_sprites
@@ -39,7 +49,7 @@ module Gamework
       # Gets the index in the array of sprites that
       # corresponds to a given x,y coordinate
 
-      @tiles[x][y]
+      @tiles[x] and @tiles[x][y]
     end
 
     def get_sprite(x,y)
@@ -52,20 +62,6 @@ module Gamework
       if sprite
         z_index = 0
         sprite.draw(x * @tile_width, y * @tile_height, z_index)
-      end
-    end
-
-    def draw_tiles
-      # Very primitive drawing function:
-      # Draws all the tiles, some off-screen, some on-screen.
-
-      height = @tiles.size
-      width  = @tiles[0].size
-
-      height.times do |y|
-        width.times do |x|
-          draw_tile(x,y)
-        end
       end
     end
 

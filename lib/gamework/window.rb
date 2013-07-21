@@ -5,10 +5,8 @@ module Gamework
     # TODO: Allow optional setting of view_mode to be
     # either :isometric (top-down) or :platform (horizontal)
 
-
     def initialize(width, height, fullscreen=false, update_interval=16.666666)
       super(width, height, fullscreen, update_interval)
-      self.caption = "This is a Gamework Game!"
     end
 
     def update
@@ -16,10 +14,14 @@ module Gamework
       # Gosu::Window class
 
       Scene.update
+      MapScene.update
+      MenuScene.update
     end
 
     def draw
       Scene.draw
+      MapScene.draw
+      MenuScene.draw
       
       if Gamework::App.debug_mode? && button_down?(Gosu::Button::KbTab)
         self.caption = [Gamework::App.title, "(#{Gosu.fps} fps), #{time}"].compact.join(" ")
@@ -30,6 +32,8 @@ module Gamework
     
     def button_down(id)
       Scene.button_down(id)
+      MapScene.button_down(id)
+      MenuScene.button_down(id)
     end
 
     def time
