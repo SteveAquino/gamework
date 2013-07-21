@@ -45,7 +45,7 @@ module Gamework
         # Npc.draw
         # Event.draw
         # @animation_handler.draw
-          @tileset.draw
+        @tileset.draw
         super
       end
     end
@@ -54,7 +54,7 @@ module Gamework
       # Ties into Gosu::Window#translate method to 
       # pan graphics with user movement
 
-      # Gamework::App.window.translate(camera_x, camera_y) { yield }
+      Gamework::App.window.translate(camera_x, camera_y) { yield }
     end
 
     # def observe(options={})
