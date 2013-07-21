@@ -92,13 +92,13 @@ module Gamework
       end
 
       def debug_mode?
-        if showing?
-          raise RuntimeError, "Can't set configuration settings after Gamework::Window#show draws the window."
-        end
         !!@debug
       end
 
       def debug_mode=(val)
+        if showing?
+          raise RuntimeError, "Can't set configuration settings after Gamework::Window#show draws the window."
+        end
         @debug_mode = val
       end
 
