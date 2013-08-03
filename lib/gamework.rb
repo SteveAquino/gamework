@@ -1,4 +1,5 @@
 require "gamework/version"
+require "gamework/helpers/has_assets"
 require "gamework/helpers/has_sound"
 require "gamework/app"
 require "gamework/window"
