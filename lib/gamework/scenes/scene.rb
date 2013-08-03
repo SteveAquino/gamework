@@ -8,8 +8,16 @@ module Gamework
     # include Collection functions to track scenes
     include Gamework::Collection
 
+    # Include asset management
+    include Gamework::HasAssets
+
     # include sound managing API for convenience
     include Gamework::HasSound
+
+    # Include input management
+    include Gamework::HasInput
+
+    attr_reader :tileset
 
     def initialize
       @end_scene = false
@@ -58,6 +66,10 @@ module Gamework
       t[:text] = text if t
     end
 
+    def create_tileset(mapfile, *args)
+      @tileset = Gamework::Tileset.create(mapfile, *args)
+    end
+
     def end_scene
       @end_scene = true
     end
@@ -88,12 +100,12 @@ module Gamework
         current and current.draw
       end
     
-      def button_down(id)
-        # Sends inupt the current Scene instance
-        # at the front of the collection
+      # def button_down(id)
+      #   # Sends inupt the current Scene instance
+      #   # at the front of the collection
 
-        current and current.button_down(id)
-      end
+      #   current and current.button_down(id)
+      # end
 
       def current
         # Alias for the first Scene in the collection

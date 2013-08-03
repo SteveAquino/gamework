@@ -6,6 +6,9 @@ describe Gamework::HasSound do
     it "adds a song to memory" do
       class Radio
         include Gamework::HasSound
+        def asset_path(path)
+          path
+        end
       end
       r = Radio.new
       file = File.expand_path("../../../../media/song.mp3", __FILE__)
@@ -17,6 +20,9 @@ describe Gamework::HasSound do
     it "only holds a single song instance across classes" do
       class Mock1
         include Gamework::HasSound
+        def asset_path(path)
+          path
+        end
       end
       class Mock2
         include Gamework::HasSound

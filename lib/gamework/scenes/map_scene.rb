@@ -5,7 +5,7 @@ module Gamework
     # NPCs, Animations, and MapEvents
 
     attr_reader   :width, :height, :camera_x, :camera_y,
-                  :tileset, :player, :animation_handler
+                  :player, :animation_handler
 
     def initialize
       super
@@ -81,7 +81,7 @@ module Gamework
    #    ].min
    #  end
 
-    def button_down(id)
+    # def button_down(id)
     #   @player.button_down(id)
     #   case id
     #     # Temporary testing controls
@@ -98,15 +98,11 @@ module Gamework
     #     when Gosu::Button::KbE
     #       Npc.new(100, 100, "link")
     #   end
-    end
+    # end
 
     # # Solid at a given pixel position?
     # def solid?(x, y)
     #   y < 0 || @tiles[x / 32][y / 32]
     # end
-
-    def create_tileset(mapfile, *args)
-      @tileset = Gamework::Tileset.create(mapfile, *args)
-    end
   end
 end

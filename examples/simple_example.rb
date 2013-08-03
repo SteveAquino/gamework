@@ -6,7 +6,13 @@ puts "Running Gamework Version #{Gamework::VERSION}"
 
 class MyScene < Gamework::MapScene
 
-  asset_directory = "spec/media"
+  # Set asset directory
+  has_assets "spec/media"
+
+  # Register input
+  on_button_down 'escape' do
+    Gamework::App.exit
+  end
 
   def initialize
     super

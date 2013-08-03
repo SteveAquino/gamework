@@ -1,21 +1,33 @@
 module Gamework
   module HasAssets
-    @@asset_directory = 'assets'
 
-    def asset_directory
-      @@asset_directory
+    def self.included(base)
+      base.extend ClassMethods
     end
 
-    def asset_directory=(path)
-      @@asset_directory = path
+    module ClassMethods
+      def has_assets(path='assets')
+        @@asset_directory = path
+        include InstanceMethods
+      end
+
+      def asset_directory
+        @@asset_directory
+      end
     end
 
-    def asset_path(file=nil, *args)
-      # Allows you to passing multiple arguments to build a file path
-      # relative to the asset_directory.
+    module InstanceMethods
+      def asset_path(file=nil, *args)
+        # Allows you to passing multiple arguments to build a file path
+        # relative to the asset_directory.
 
-      base_path = [asset_directory, args.reverse].compact.join('/')
-      File.expand_path(file, base_path)
+        base_path = [asset_directory, args.reverse].compact.join('/')
+        File.expand_path(file.to_s, base_path)
+      end
+
+      def asset_directory
+        self.class.asset_directory
+      end
     end
 
   end

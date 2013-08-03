@@ -3,9 +3,6 @@ module Gamework
     # Allows objects to easily interact with the
     # Gosu::Sample and Gosu::Song API.
 
-    # Include asset management
-    include Gamework::HasAssets
-
     @@song = nil
 
     def load_song(file, autoplay=true)
