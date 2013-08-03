@@ -37,6 +37,16 @@ describe Gamework::App do
       Gamework::App.start
       @called.should be_false
     end
+
+    xit "takes a block argument that is called before window is shown" do
+      @called = false
+      Gamework::Window.any_instance.stub(:make_window)
+      Gamework::Window.any_instance.stub(:show)
+      
+      Gamework::App.start { @called = true }
+      @called.should be_true
+      Gamework::App.showing?.should be_true
+    end
   end
 
   describe ".window" do

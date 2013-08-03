@@ -5,7 +5,11 @@ module Gamework
     # as the delegator for drawing graphics, updating
     # objects, playing sounds, and managing state.
 
+    # include Collection functions to track scenes
     include Gamework::Collection
+
+    # include sound managing API for convenience
+    include Gamework::HasSound
 
     def initialize
       @end_scene = false
@@ -95,16 +99,6 @@ module Gamework
         # Alias for the first Scene in the collection
 
         first
-      end
-
-      def next(scene=nil)
-        # Marks the current scene for deletion
-        # and optionally takes another Class
-        # that inherits from Gamework::Scene to
-        # append to the array
-
-        current and current.end_scene
-        scene.create if scene.is_a?(Gamework::Scene)
       end
     end
 

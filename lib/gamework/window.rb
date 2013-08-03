@@ -11,17 +11,18 @@ module Gamework
 
     def update
       # Called 60 times per second from
-      # Gosu::Window class
-
-      Scene.update
-      MapScene.update
-      MenuScene.update
+      # Gosu::Window class, called
+      # before draw
+      
+      Gamework::App.update
     end
 
     def draw
-      Scene.draw
-      MapScene.draw
-      MenuScene.draw
+      # Called 60 times per second from
+      # Gosu::Window class, called
+      # after update
+
+      Gamework::App.draw
       
       if Gamework::App.debug_mode? && button_down?(Gosu::Button::KbTab)
         self.caption = [Gamework::App.title, "(#{Gosu.fps} fps), #{time}"].compact.join(" ")
@@ -31,9 +32,9 @@ module Gamework
     end
     
     def button_down(id)
-      Scene.button_down(id)
-      MapScene.button_down(id)
-      MenuScene.button_down(id)
+      # Listens to input on the window
+
+      Gamework::App.button_down(id)
     end
 
     def time

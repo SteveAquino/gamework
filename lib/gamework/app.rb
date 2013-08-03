@@ -5,14 +5,25 @@ module Gamework
     # that is accessible elsewhere in the app by calling
     # Gamework::App.window
 
-    # include sound managing API for convenience
-    include Gamework::Sound
+    @@scenes = []
 
     class << self
       # Class Methods (accessible via Gamework::App#method)
 
       @showing = false
       attr_accessor :width, :height, :fullscreen, :debug_mode, :title
+
+      def update
+      	current_scene and current_scene.update
+      end
+
+      def draw
+				current_scene and current_scene.draw
+      end
+
+      def button_down(id)
+      	current_scene and current_scene.button_down(id)
+      end
 
       def window
         # Returns the only instance of Gosu::Window so
@@ -23,7 +34,7 @@ module Gamework
       end
 
       def make_window
-        @window ||= Gamework::Window.new(width, height, fullscreen)
+        @window ||= Gamework::Window.new(@width, @height, !!@fullscreen)
       end
 
       def show
@@ -39,6 +50,10 @@ module Gamework
       end
 
       def start(&block)
+      	# Creates a new window, runs an
+      	# optional block, and then begins
+      	# the main game loop
+
         return if showing?
         make_window
         yield if block_given?
@@ -51,43 +66,53 @@ module Gamework
       end
 
       def config(&block)
-        # Allow block style configuration settings,
-        # ie: 
+        # Allow block style configuration settings, ie:
+        #
         # config.do |c|
         #   c.width  = 800
         #   c.height = 640
         # end
 
         # Raise error if the window is already drawn
-        if showing?
-          raise RuntimeError, "Can't set configuration settings after Gamework::Window#show draws the window."          
-        end
-
+        raise_config_error if showing?
         yield(Gamework::App)
+      end
+
+      def current_scene
+      	@@scenes.first
+      end
+
+      def add_scene(scene)
+      	unless scene <= Gamework::Scene
+	      	raise "Must be type of Gamework::Scene or subclass"
+	      end
+        @@scenes.push(scene.create)
+      end
+
+      def end_scene
+    		current_scene.end_scene
       end
 
       # Define class level accessor methods for
       # easy configuration settings, but raise
       # error if the window is already drawn
 
+      def raise_config_error
+        raise "Can't set configuration settings after the game has started."
+      end
+
       def width=(val)
-        if showing?
-          raise RuntimeError, "Can't set configuration settings after Gamework::Window#show draws the window."
-        end
+        raise_config_error if showing?
         @width = val
       end
 
       def height=(val)
-        if showing?
-          raise RuntimeError, "Can't set configuration settings after Gamework::Window#show draws the window."
-        end
+        raise_config_error if showing?
         @height = val
       end
 
       def fullscreen=(val)
-        if showing?
-          raise RuntimeError, "Can't set configuration settings after Gamework::Window#show draws the window."
-        end
+        raise_config_error if showing?
         @fullscreen = val
       end
 
@@ -96,14 +121,20 @@ module Gamework
       end
 
       def debug_mode=(val)
-        if showing?
-          raise RuntimeError, "Can't set configuration settings after Gamework::Window#show draws the window."
-        end
+        raise_config_error if showing?
         @debug_mode = val
       end
 
+      def center_x
+        @width/2
+      end
+
+      def center_y
+        @height/2
+      end
+
       def center
-        [(@width/2), (@height/2)]
+        [center_x, center_y]
       end
     end
 

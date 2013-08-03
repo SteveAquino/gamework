@@ -1,5 +1,5 @@
 module Gamework
-  module Sound
+  module HasSound
 
     def self.included(base)
       base.extend ClassMethods

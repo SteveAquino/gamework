@@ -34,12 +34,11 @@ module Gamework
     end
 
     def draw
-      # Static visualizations go here
-      # @player.draw
+      # Fixed visualizations go here (HUD, ect...)
       # @hud.draw
       # @dialogue.draw unless @dialogue.nil?
 
-      # Objects that scroll with the map go here
+      # Objects that scroll with the camera go here
       translate(-@camera_x, -@camera_y) do
         # @player.draw
         # Npc.draw
