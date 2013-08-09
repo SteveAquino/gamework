@@ -9,35 +9,48 @@ class MyScene < Gamework::MapScene
   # Set asset directory
   has_assets "spec/media"
 
-  # Register input
-  on_button_down 'escape' do
-    Gamework::App.exit
-  end
+  # Listen for input
+  on_button_down 'escape', 'kb', :end_scene
+  on_button_toggle ['up', 'down', 'left', 'right'], 'kb', :move_player, :stop_player
 
   def initialize
+    # Initialize basic MapScene class
     super
 
     # Load music
     load_song "song.mp3"
 
     # Draw map
-    mapfile     = File.expand_path "../../spec/media/map.txt", __FILE__
-    spritesheet = File.expand_path "../../spec/media/tileset.png", __FILE__
+    mapfile     = asset_path("map.txt")
+    spritesheet = asset_path("tileset.png")
     create_tileset(mapfile, 32, 32, spritesheet)
 
-    # Draw player
-    spritesheet = File.expand_path "../../spec/media/spritesheet.png", __FILE__
-    @sprite = Gamework::Sprite.new(32, 32, 32, 32, spritesheet)
+    # Create player
+    spritesheet = asset_path("spritesheet.png")
+    @player = Gamework::Actor.new(30, 30, 30, 30, spritesheet)
   end
 
   def draw
-    @sprite and @sprite.draw
+    @player and @player.draw
     super
   end
 
   def update
-    @sprite and @sprite.update
-    super
+    update_input
+    @player and @player.update
+    update_camera(@player)
+  end
+
+  def end_game(b=nil)
+    Gamework::App.exit
+  end
+
+  def move_player(dir)
+    @player.move(dir.intern)
+  end
+
+  def stop_player(dir=nil)
+    @player.stop
   end
 
 end
@@ -50,5 +63,5 @@ Gamework::App.config do |c|
 end
 
 Gamework::App.start do
-  Gamework::App.add_scene(MyScene)
+  Gamework::App << MyScene
 end

@@ -5,28 +5,21 @@ module Gamework
     # as the delegator for drawing graphics, updating
     # objects, playing sounds, and managing state.
 
-    # include Collection functions to track scenes
-    include Gamework::Collection
-
     # Include asset management
     include Gamework::HasAssets
-
-    # include sound managing API for convenience
+    # include sound management
     include Gamework::HasSound
-
     # Include input management
     include Gamework::HasInput
 
     attr_reader :tileset
 
     def initialize
-      @end_scene = false
       # @windows = {}
       # @text    = {}
     end
 
     def update
-
     end
     
     def draw
@@ -37,6 +30,18 @@ module Gamework
       #             text_options[:z],     text_options[:factor_x], text_options[:factor_y],
       #              text_options[:color], text_options[:mode])
       # end
+    end
+
+    def end_scene
+      @end_scene = true
+    end
+
+    def ended?
+      !!@end_scene
+    end
+
+    def create_tileset(mapfile, *args)
+      @tileset = Gamework::Tileset.create(mapfile, *args)
     end
 
     def draw_window(id, *args)
@@ -65,54 +70,5 @@ module Gamework
       t = @text[id]
       t[:text] = text if t
     end
-
-    def create_tileset(mapfile, *args)
-      @tileset = Gamework::Tileset.create(mapfile, *args)
-    end
-
-    def end_scene
-      @end_scene = true
-    end
-
-    def ended?
-      !!@end_scene
-    end
-
-    class << self
-      # Class Methods
-
-      def update
-        # Updates the current Scene instance
-        # at the front of the collection
-
-        # First check for and remove the current Scene
-        # if it's marked for deletion
-        shift if current and current.ended?
-
-        # Update the current Scene in the collection
-        current and current.update
-      end
-
-      def draw
-        # Draws the current Scene instance
-        # at the front of the collection
-
-        current and current.draw
-      end
-    
-      # def button_down(id)
-      #   # Sends inupt the current Scene instance
-      #   # at the front of the collection
-
-      #   current and current.button_down(id)
-      # end
-
-      def current
-        # Alias for the first Scene in the collection
-
-        first
-      end
-    end
-
   end
 end

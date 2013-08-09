@@ -1,21 +1,18 @@
 module Gamework
   class MapScene < Gamework::Scene
     # MapScenes are the heart of gameplay for Gamework
-    # games.  MapScenes hold the instance of the player,
+    # games.  MapScenes hold the references to the player,
     # NPCs, Animations, and MapEvents
 
     attr_reader   :width, :height, :camera_x, :camera_y,
-                  :player, :animation_handler
+                  :animation_handler
 
     def initialize
-      super
-
       # The scrolling position is relative to the
       # top left corner of the screen.
       @camera_x = @camera_y = 0
 
       # @animation_handler = AnimationHandler.new
-      # @player = Player.new(@name, GameSaves.all.length)
       # @hud = Hud.new(@player)
 
       # Mark self as observer to watch for
@@ -30,7 +27,6 @@ module Gamework
     #   @hud.update
     #   @animation_handler.update
     #   update_camera(@player)
-      super
     end
 
     def draw
@@ -45,7 +41,6 @@ module Gamework
         # Event.draw
         # @animation_handler.draw
         @tileset.draw if @tileset
-        super
       end
     end
 
@@ -67,38 +62,22 @@ module Gamework
     #   end
     # end
 
-    # def update_camera(target)
-    #   half_width  = GameConstants::ScreenWidth / 2
-    #   half_height = GameConstants::ScreenHeight / 2
+    def update_camera(target)
+      # Updates the camera to follow a given
+      # Actor on the screen
+
+      half_width  = Gamework::App.center_x
+      half_height = Gamework::App.center_y
       
-   #    @camera_x = [
-   #      [target.x - (half_width),  0].max,
-   #      self.width * Tiles::Size - half_width
-   #    ].min
-   #    @camera_y = [
-   #      [target.y - (half_height), 0].max,
-   #      self.height * Tiles::Size - half_height
-   #    ].min
-   #  end
-
-    # def button_down(id)
-    #   @player.button_down(id)
-    #   case id
-    #     # Temporary testing controls
-    #     # TODO: Add testing console/API
-
-    #     when Gosu::Button::KbEscape
-    #       $game.close
-    #     when Gosu::Button::KbR
-    #       @dialogue = Dialogue.new("Hello #{@player.name}", "This is a new Dialogue window!")
-    #     when Gosu::Button::KbU
-    #       @dialogue.close
-    #       @dialogue = nil
-    #       $game.save(@player.save_file)
-    #     when Gosu::Button::KbE
-    #       Npc.new(100, 100, "link")
-    #   end
-    # end
+      @camera_x = [
+        [target.x - (half_width),  0].max,
+        target.width * @tileset.tile_width - half_width
+      ].min
+      @camera_y = [
+        [target.y - (half_height), 0].max,
+        target.height * @tileset.tile_height - half_height
+      ].min
+    end
 
     # # Solid at a given pixel position?
     # def solid?(x, y)

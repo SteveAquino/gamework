@@ -14,7 +14,18 @@ module Gamework
       attr_accessor :width, :height, :fullscreen, :debug_mode, :title
 
       def update
-      	current_scene and current_scene.update
+        # Updates the current Scene instance
+        # at the front of the collection
+
+        # First check for and remove the current Scene
+        # if it's marked for deletion
+        @@scenes.shift if current_scene and current_scene.ended?
+
+      	unless current_scene.nil?
+          current_scene.update
+        else
+          exit
+        end
       end
 
       def draw
@@ -22,7 +33,11 @@ module Gamework
       end
 
       def button_down(id)
-      	current_scene and current_scene.button_down(id)
+        current_scene and current_scene.button_down(id)
+      end
+
+      def button_up(id)
+        current_scene and current_scene.button_up(id)
       end
 
       def window
@@ -86,10 +101,14 @@ module Gamework
       	unless scene <= Gamework::Scene
 	      	raise "Must be type of Gamework::Scene or subclass"
 	      end
-        @@scenes.push(scene.create)
+        @@scenes.push(scene.new)
       end
 
-      def end_scene
+      def <<(scene)
+        add_scene(scene)
+      end
+
+      def end_current_scene
     		current_scene.end_scene
       end
 

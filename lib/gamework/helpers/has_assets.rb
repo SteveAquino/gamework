@@ -29,6 +29,5 @@ module Gamework
         self.class.asset_directory
       end
     end
-
   end
 end
