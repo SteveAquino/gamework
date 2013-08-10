@@ -1,7 +1,7 @@
 module Gamework
   class Tileset
-    attr_reader :tile_width, :tile_height, :spritesheet, :mapkey,
-                :sprites, :tiles
+    attr_reader :tile_width, :tile_height, :tiles, :mapkey,
+                :spritesheet, :sprites
 
     def initialize(tile_width, tile_height, spritesheet, mapkey=nil)
       @tile_width, @tile_height, @spritesheet, @mapkey = tile_width, tile_height, spritesheet, mapkey
@@ -35,13 +35,8 @@ module Gamework
       # in the array of sprites.
 
       lines  = File.readlines(mapfile).map { |line| line.chomp }
-      height = lines.size
-      width  = lines[0].size
-      @tiles = Array.new(width) do |x|
-        Array.new(height) do |y|
-          char = lines[y][x, 1]
-          @mapkey.nil? ? char.to_i : @mapkey[char]
-        end
+      @tiles = lines.map do |line|
+        line.each_char.map {|l| @mapkey.nil? ? l.to_i : @mapkey[l]}
       end
     end
 
@@ -49,7 +44,7 @@ module Gamework
       # Gets the index in the array of sprites that
       # corresponds to a given x,y coordinate
 
-      @tiles[x] and @tiles[x][y]
+      @tiles[y] and @tiles[y][x]
     end
 
     def get_sprite(x,y)
@@ -60,8 +55,7 @@ module Gamework
     def draw_tile(x,y)
       sprite = get_sprite(x,y)
       if sprite
-        z_index = 0
-        sprite.draw(x * @tile_width, y * @tile_height, z_index)
+        sprite.draw(x * @tile_width, y * @tile_height, 0)
       end
     end
 

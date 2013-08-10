@@ -12,6 +12,7 @@ module Gamework
       @speed       = 3
       @moving      = false
       @z           = 1
+      @scale       = 2
       @direction   = :down
       @sprites     = {}
 
@@ -21,7 +22,10 @@ module Gamework
     def draw
       # Hide sprite when the animating
       return if @animating
-      @sprite.draw_rot(@x, @y, z_index, 0, 0.5, 0.5, 2, 2)
+      # Use draw_rot to use the center as the reference
+      # point, allowing the character to walk to edge of
+      # the screen.
+      @sprite.draw_rot(@x, @y, z_index, 0, 0.5, 0.5, @scale, @scale)
     end
 
     def update
@@ -57,7 +61,7 @@ module Gamework
       # up into an array, and then splits it into rows
       # to use for 4-directional animation.
 
-      tiles = Gosu::Image.load_tiles(Gamework::App.window, @spritesheet, @width, @height, false)
+      tiles = Gosu::Image.load_tiles(Gamework::App.window, @spritesheet, @width, @height, true)
       i     = tiles.length
 
       if i % 4 == 0

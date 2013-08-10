@@ -19,22 +19,22 @@ describe Gamework::Tileset do
   describe "#make_tiles" do
     context "without mapkey" do
       it "creates a nested array of tiles" do
-        col     = [0,1,2,3]
-        path    = File.expand_path "../../../../media/map.txt", __FILE__
-        tileset = Gamework::Tileset.new(32, 32, "test.png")
+        expected = [[0]*10,[1]*10,[2]*10,[3]*10] 
+        path     = File.expand_path "../../../../media/map.txt", __FILE__
+        tileset  = Gamework::Tileset.new(32, 32, "test.png")
         tileset.make_tiles(path)
-        tileset.tiles.should eq([col,col,col,col])
+        tileset.tiles.should eq(expected)
       end
     end
 
     context "with mapkey" do
       it "creates a nested array of tiles" do
-        col     = [0,1,2,3,4]
-        path    = File.expand_path "../../../../media/map2.txt", __FILE__
-        mapkey  = {'.' => 0, ',' => 1, '#' => 2, 't' => 3, 'x' => 4}
-        tileset = Gamework::Tileset.new(32, 32, "test.png", mapkey)
+        expected = [[0]*10,[1]*10,[2]*10,[3]*10,[4]*10]
+        path     = File.expand_path "../../../../media/map2.txt", __FILE__
+        mapkey   = {'.' => 0, ',' => 1, '#' => 2, 't' => 3, 'x' => 4}
+        tileset  = Gamework::Tileset.new(32, 32, "test.png", mapkey)
         tileset.make_tiles(path)
-        tileset.tiles.should eq([col,col,col,col])
+        tileset.tiles.should eq(expected)
       end
     end
   end

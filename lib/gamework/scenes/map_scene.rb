@@ -33,10 +33,10 @@ module Gamework
       # Fixed visualizations go here (HUD, ect...)
       # @hud.draw
       # @dialogue.draw unless @dialogue.nil?
+      # @player.draw
 
       # Objects that scroll with the camera go here
       translate(-@camera_x, -@camera_y) do
-        # @player.draw
         # Npc.draw
         # Event.draw
         # @animation_handler.draw

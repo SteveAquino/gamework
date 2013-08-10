@@ -21,24 +21,25 @@ class MyScene < Gamework::MapScene
     load_song "song.mp3"
 
     # Draw map
-    mapfile     = asset_path("map.txt")
+    mapfile     = asset_path("simple_map.txt")
+    mapkey      = {'.' => 0, ',' => 1, '#' => 2, 't' => 3, 'x' => 4}
     spritesheet = asset_path("tileset.png")
-    create_tileset(mapfile, 32, 32, spritesheet)
+    create_tileset(mapfile, 32, 32, spritesheet, mapkey)
+    binding.pry
 
     # Create player
     spritesheet = asset_path("spritesheet.png")
     @player = Gamework::Actor.new(30, 30, 30, 30, spritesheet)
-    @actors = [@player]
   end
 
   def draw
-    @actors.each {|a| a.draw}
+    @player.draw
     super
   end
 
   def update
     update_input
-    @actors.each {|a| a.update}
+    @player.update
     update_camera(@player)
   end
 
