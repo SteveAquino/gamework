@@ -28,16 +28,17 @@ class MyScene < Gamework::MapScene
     # Create player
     spritesheet = asset_path("spritesheet.png")
     @player = Gamework::Actor.new(30, 30, 30, 30, spritesheet)
+    @actors = [@player]
   end
 
   def draw
-    @player and @player.draw
+    @actors.each {|a| a.draw}
     super
   end
 
   def update
     update_input
-    @player and @player.update
+    @actors.each {|a| a.update}
     update_camera(@player)
   end
 

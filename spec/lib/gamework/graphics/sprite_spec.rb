@@ -1,21 +1,20 @@
 require_relative '../../../spec_helper'
  
 describe Gamework::Sprite do
-  describe "#make_sprites" do
 
-    it "creates a hash of Gosu::Image instances" do
-      path   = File.expand_path "../../../../media/spritesheet.png", __FILE__
-      window = Gamework::Window.new(1,1)
-      Gamework::App.stub(:window).and_return(window)
-      Gosu::Image.any_instance.stub(:initialize)
-      sprite  = Gamework::Sprite.new(0, 0, 30, 30, path)
+  describe "#split_tiles_by_four" do
+    it "splits an array into four consecutive subarrays in a hash" do
+      Gamework::Sprite.any_instance.stub(:make_sprites)
+      sprite = Gamework::Sprite.new(1,2,3,4,5)
+      tiles  = (0..40).to_a
+      sprite.split_tiles_by_four(tiles)
       sprites = sprite.instance_variable_get("@sprites")
-      sprites.length.should eq(4)
-      [:up, :down, :left, :right].each do |dir|
-        sprites[dir].length.should eq(11)
-        sprites[dir].each {|t| t.is_a?(Gosu::Image).should be_true }
+      [:down, :left, :right, :up].each_with_index do |dir, i|
+        range    = (i*10)...(i*10+10)
+        subarray = range.to_a
+        sprites[dir].should eq(subarray)
       end
     end
-  
   end
+
 end

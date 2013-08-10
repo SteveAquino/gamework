@@ -75,9 +75,10 @@ module Gamework
 
       length = tiles.length/4
       [:down, :left, :right, :up].each_with_index do |dir, x|
-        @sprites[dir] = (0..length-1).map {|y| tiles[x + y] }
+        start_i = x * length
+        end_i   = start_i + length
+        @sprites[dir] = tiles[start_i...end_i]
       end
-      @sprite = @sprites[:down][0]
     end
 
     def split_tiles_by_one(tiles)
