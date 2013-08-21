@@ -1,0 +1,28 @@
+song:
+  songfile: 'song.mp3'
+  autoplay: true
+tileset:
+  mapfile: 'simple_map.txt'
+  tile_width: 32
+  tile_height: 32
+  spritesheet: 'tileset.png'
+  mapkey:
+    '.': 0
+    ',': 1
+    '#': 2
+    't': 3
+    'x': 4
+actors:
+  player:
+    x: 400
+    y: 320
+    width: 30
+    height: 30
+    spritesheet: 'spritesheet.png'
+    follow: true
+  npc1:
+    x: 100
+    y: 100
+    width: 30
+    height: 30
+    spritesheet: 'spritesheet.png'

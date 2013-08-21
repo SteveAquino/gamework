@@ -1,25 +1,32 @@
 module Gamework
   class Actor
+    # An Actor can be thought of as the model part of
+    # a Model View Controller framework.  Actors
+    # represent the objects and characters that make
+    # up your game, each with a sprite, animations
+    # and collision detection.
 
     attr_reader :x, :y, :z, :width, :height,
-                :direction, :moving, :animating,
-                :sprite
+                :direction, :moving
 
     def initialize(x, y, width, height, spritesheet)
-      @x, @y, @width, @height = x, y, width, height
+      @x, @y, @width, @height, @spritesheet = x, y, width, height, spritesheet
       @z = 0
       @speed = 3
       @direction = :down
-      @animating = @moving = @dir_fixed = false
-      @sprite = Sprite.new(x, y, width, height, spritesheet)
+      @invisible = @moving = @dir_fixed = false
     end
 
     def update
-      @sprite.update
+      sprite.update
     end
 
     def draw
-      @sprite.draw
+      sprite.draw if showing?
+    end
+
+    def sprite
+      @sprite ||= Sprite.new(@x, @y, @width, @height, @spritesheet)
     end
 
     def set_position(x, y)
@@ -30,9 +37,13 @@ module Gamework
       [@x, @y] == [x, y]
     end
 
+    def resize(width, height)
+      @width, @height = width, height
+    end
+
     def turn(direction)
       @direction = direction
-      @sprite.turn direction
+      sprite.turn direction
     end
 
     def step_forward
@@ -41,7 +52,7 @@ module Gamework
     
     def stop
       @moving = false
-      @sprite.stop
+      sprite.stop
     end
 
     def move(direction)
@@ -59,26 +70,20 @@ module Gamework
       when :right
         @x += @speed
       end
-      @sprite.move(direction)
+      sprite.move(direction)
     end
 
-    # def animate(&block)
-    #   builder = AnimationBuilder.new
-    #   yield(builder)
-    #   changed and notify_observers(animation: builder.create)
-    # end
-    
-    # def start_animating
-    #   @animating = true
-    # end
-    
-    # def stop_animating
-    #   @animating = false
-    # end
+    def hide
+      @invisible = true
+    end
 
-    # def animating?
-    #   @animating
-    # end
+    def show
+      @invisible = false
+    end
+
+    def showing?
+      !!!@invisible
+    end
     
     # def collision_box(offset_x=0, offset_y=0)
     #   # Draws a rectangle from top left corner
@@ -168,5 +173,30 @@ module Gamework
     # def move_away_from(target)
     #   # should mirror move_towards(target)
     # end
+
+    def self.create(options={})
+      # Allows creation with a hash of options
+
+      options.keys.each do |key|
+        options[(key.to_sym rescue key) || key] = options.delete(key)
+      end
+
+      if options[:position]
+        x = options[:position][0]
+        y = options[:position][1]
+      else
+        x = options[:x]
+        y = options[:y]
+      end
+      if options[:size]
+        height = width = options[:size]
+      else
+        height = options[:height]
+        width  = options[:width]
+      end
+      spritesheet = options[:spritesheet]
+
+      new(x, y, width, height, spritesheet)
+    end
   end
 end

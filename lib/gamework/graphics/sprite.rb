@@ -22,6 +22,7 @@ module Gamework
     def draw
       # Hide sprite when the animating
       return if @animating
+
       # Use draw_rot to use the center as the reference
       # point, allowing the character to walk to edge of
       # the screen.
@@ -71,6 +72,8 @@ module Gamework
         # Make unidirectional sprite
         split_tiles_by_one(tiles)
       end
+      # Set starting sprite
+      update_sprite
     end
 
     def split_tiles_by_four(tiles)

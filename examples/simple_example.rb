@@ -1,10 +1,9 @@
 require 'rubygems'
 require 'gamework'
-require 'pry'
 
 puts "Running Gamework Version #{Gamework::VERSION}"
 
-class MyScene < Gamework::MapScene
+class MyScene < Gamework::Scene
 
   # Set asset directory
   has_assets "spec/media"
@@ -13,46 +12,44 @@ class MyScene < Gamework::MapScene
   on_button_down 'escape', 'kb', :end_scene
   on_button_toggle ['up', 'down', 'left', 'right'], 'kb', :move_player, :stop_player
 
-  def initialize
-    # Initialize basic MapScene class
-    super
+  def start_scene
+    # Prepare the scene with music, a tileset, and actors
 
     # Load music
-    load_song "song.mp3"
+    load_song asset_path("song.mp3")
 
     # Draw map
+    spritesheet = asset_path("tileset.png")
     mapfile     = asset_path("simple_map.txt")
     mapkey      = {'.' => 0, ',' => 1, '#' => 2, 't' => 3, 'x' => 4}
-    spritesheet = asset_path("tileset.png")
-    create_tileset(mapfile, 32, 32, spritesheet, mapkey)
-    binding.pry
+    create_tileset mapfile, 32, 32, spritesheet, mapkey
 
-    # Create player
-    spritesheet = asset_path("spritesheet.png")
-    @player = Gamework::Actor.new(30, 30, 30, 30, spritesheet)
-  end
-
-  def draw
-    @player.draw
-    super
-  end
-
-  def update
-    update_input
-    @player.update
-    update_camera(@player)
-  end
-
-  def end_game(b=nil)
-    Gamework::App.exit
+    # Create player and npcs with nested hash
+    create_actors({
+      player: {
+        size: 30,
+        position: [400, 320],
+        spritesheet: asset_path("spritesheet.png"),
+        follow: true
+      },
+      npc: {
+        size: 30,
+        position: [100, 100],
+        spritesheet: asset_path("spritesheet.png")
+      }
+    })
   end
 
   def move_player(dir)
-    @player.move(dir.intern)
+    player.move(dir.intern)
   end
 
   def stop_player(dir=nil)
-    @player.stop
+    player.stop
+  end
+  
+  def player
+    @actors[:player]
   end
 
 end

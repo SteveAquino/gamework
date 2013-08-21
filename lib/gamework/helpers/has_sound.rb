@@ -7,7 +7,7 @@ module Gamework
 
     def load_song(file, autoplay=true)
       stop_song
-      @@song = Gosu::Song.new(asset_path file)
+      @@song = Gosu::Song.new(file)
       play_song if autoplay
       return @@song
     end
@@ -30,7 +30,7 @@ module Gamework
       # have their own caches for sounds
 
       @sounds ||= {}
-      sound = @sounds[id] ||= Gosu::Sample.new(asset_path file)
+      sound = @sounds[id] ||= Gosu::Sample.new(file)
       sound.play
     end
 

@@ -4,43 +4,43 @@ require 'pry'
 
 puts "Running Gamework Version #{Gamework::VERSION}"
 
-class MyScene < Gamework::MapScene
+class StartScene < Gamework::Scene
+  on_button_down 'return', 'kb', :end_scene
+
+  def start_scene
+    x = Gamework::App.center_x
+    @triangles = [
+      Gamework::Shape.new(:triangle, x: x+50, y: 300, size: 100, color: 'yellow'),
+      Gamework::Shape.new(:triangle, x: x-50, y: 300, size: 100, color: 'yellow'),
+      Gamework::Shape.new(:triangle, x: x, y: 200, size: 100, color: 'yellow')
+    ]
+    show_text :title, "Example Game", x: 250, y: 50, size: 50
+    show_text :menu, "Press ENTER to Start", x: 310, y: 500, size: 20
+  end
+
+  def before_draw
+    @triangles.each {|t| t.draw}
+  end
+end
+
+class CoolScene < Gamework::Scene
+  # Load scene from yaml file
+  build_scene "examples/advanced_map.yaml"
   has_assets "spec/media"
+  on_button_down 'escape', 'kb', :end_scene
+  on_button_toggle ['up', 'down', 'left', 'right'], 'kb', :move_player, :stop_player
 
-  on_button_down ['escape', 'q'], 'kb', :end_game
-
-  def initialize
-    # Initialize basic Scene class
-    super
-
-    # Load music
-    load_song "song.mp3"
-
-    # Draw map
-    mapfile     = asset_path("map.txt")
-    spritesheet = asset_path("tileset.png")
-    mapkey  = {'.' => 0, ',' => 1, '#' => 2, 't' => 3, 'x' => 4}
-    create_tileset(mapfile, 32, 32, spritesheet, mapkey)
-
-    # Draw player
-    spritesheet = asset_path("spritesheet.png")
-    @sprite = Gamework::Sprite.new(80, 80, 32, 32, spritesheet)
+  def move_player(dir)
+    player.move(dir.intern)
   end
 
-  def draw
-    @sprite and @sprite.draw
-    super
+  def stop_player(dir=nil)
+    player.stop
   end
-
-  def update
-    @sprite and @sprite.update
-    super
+  
+  def player
+    @actors[:player]
   end
-
-  def self.end_game
-    Gamework::App.exit
-  end
-
 end
 
 Gamework::App.config do |c|
@@ -51,5 +51,6 @@ Gamework::App.config do |c|
 end
 
 Gamework::App.start do
-  Gamework::App.add_scene(MyScene)
+  Gamework::App << StartScene
+  Gamework::App << CoolScene
 end
