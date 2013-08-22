@@ -71,12 +71,10 @@ module Gamework
     end
 
     def make_rectangle
-      width  = @width/2
-      height = @height/2
-      x1 = @x-width
-      x2 = @x+width
-      y1 = @y-height
-      y2 = @y+height
+      x1 = @x-@width
+      x2 = @x+@width
+      y1 = @y-@height
+      y2 = @y+@height
       color1 = @colors[0] || @color
       color2 = @colors[1] || @color
       color3 = @colors[2] || @color
@@ -88,15 +86,11 @@ module Gamework
     end
 
     def make_background
-      x1 = 0
-      y1 = 0
-      x2 = Gamework::App.width
-      y2 = Gamework::App.height
-      color1 = @colors[0] || @color
-      color2 = @colors[1] || @color
-      color3 = @colors[2] || @color
-      color4 = @colors[3] || @color
-      @args = [x1, y1, color1, x1, y2, color2, x2, y2, color3, x2, y1, color4, @z]
+      @x = 0
+      @y = 0
+      @width  = Gamework::App.width
+      @height = Gamework::App.height
+      make_rectangle
     end
   end
 end
