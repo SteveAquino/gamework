@@ -1,5 +1,5 @@
 module Gamework
-  class Text
+  class Text < Gamework::Drawable
     # Represents on screen game text
 
     attr_reader :text, :font_name, :height,
@@ -16,6 +16,7 @@ module Gamework
       @font_name = options[:font_name] || Gosu.default_font_name
       @size      = options[:size]      || 30
       @mode      = options[:mode]      || :default
+      @fixed     = options[:fixed]     || false
 
       make_font
     end
@@ -28,7 +29,7 @@ module Gamework
       @font.draw(@text, @x, @y, @z, @factor_x, @factor_y, @color, @mode)
     end
 
-    def update(text)
+    def update_text(text)
       @text = text
     end
   end

@@ -11,17 +11,17 @@ module Gamework
     include Gamework::HasShapes
 
     @scene_file = nil
-    attr_reader :tileset, :actors, :paused
+    attr_reader :tileset, :actors, :paused, :fixed, :unfixed
 
     def initialize
       # The scrolling position is relative to the
       # top left corner of the screen.
       @camera_x = @camera_y = 0
 
-      @paused = false
-      @actors = {}
-      @text   = {}
-      # @windows = {}
+      @paused  = false
+      @actors  = {}
+      @fixed   = []
+      @unfixed = []
 
       build_scene(scene_file) if scene_file
       start_scene
@@ -49,6 +49,7 @@ module Gamework
       update_input unless paused?
       update_camera(@camera_target) if @camera_target
       update_actors
+      update_drawables
 
       after_update
     end
@@ -58,18 +59,18 @@ module Gamework
       # HUD
       # Events
       # Animations
-      # Text
       # Dialogue windows
 
       # Fixed visualizations go here (HUD, ect...)
       before_draw
 
-      @text.values.each {|t| t.draw }
+      @fixed.each {|d| d.draw }
       draw_relative do
         # Objects that scroll with the camera go here
 
         @actors.values.each {|a| a.draw }
         @tileset.draw if @tileset
+        @unfixed.each {|d| d.draw }
       end
 
       after_draw
@@ -124,6 +125,11 @@ module Gamework
       @actors.values.each {|a| a.update }
     end
 
+    def update_drawables
+      @fixed.each {|d| d.update }
+      @unfixed.each {|d| d.update }
+    end
+
     def create_tileset(mapfile, *args)
       # Alias for Gamework::Tileset.create
 
@@ -148,10 +154,41 @@ module Gamework
       return @actors
     end
 
-    def show_text(id, text, options={})
+    def show_text(text, options={})
       # Alias for Gamework::Text.new
       
-      @text[id] = Gamework::Text.new(text, options)
+      add_drawable Gamework::Text.new(text, options)
+    end
+
+    def show_shape(type, options={})
+      # Alias for Gamework::Shape.new
+
+      add_drawable Gamework::Shape.new(type, options)
+    end
+
+    def draw_background(options={})
+      # Draws a :background type shape
+      # below other drawables
+
+      settings = {z: -1}.merge(options)
+      show_shape(:background, settings)
+    end
+
+    def add_drawable(drawable)
+      # Separates drawable objects into
+      # fixed and unfixed arrays for
+      # drawing relative to the map.
+
+      collection = drawable.fixed? ? @fixed : @unfixed
+      collection << drawable
+      return drawable
+    end
+
+    def delete_drawable(drawable)
+      # Removes a drawable object
+
+      collection = drawable.fixed? ? @fixed : @unfixed
+      collection.delete drawable
     end
 
     def build_scene(scene_file)
@@ -160,7 +197,7 @@ module Gamework
       builder = Gamework::SceneBuilder.new(self, scene_file)
       builder.load
       builder.build_scene
-      self
+      return self
     end
 
     def self.build_scene(scene_file)

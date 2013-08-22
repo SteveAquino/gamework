@@ -1,18 +1,22 @@
 module Gamework
-  class Shape
-    # Creates an object that stores
+  class Shape < Gamework::Drawable
+    # Creates a basic shape based on
+    # given type and options.
 
-    attr_reader :type, :x, :y, :z, :size, :color, :options
+    attr_reader :type, :x, :y, :z, :color, :colors, :options
 
     def initialize(type, options={})
       @type = type.intern
       @x = options[:x] || 0
       @y = options[:y] || 0
       @z = options[:z] || 1000
-      @size  = options[:size]  || 50
-      @color = options[:color] || 0xffffffff
-      @args  = []
-      make_color
+      @width  = options[:width]  || options[:size] || 50
+      @height = options[:height] || options[:size] || 50
+      @color  = options[:color]  || 0xffffffff
+      @colors = options[:colors] || []
+      @fixed  = options[:fixed]  || false
+      @args   = []
+      make_colors
       make_shape
     end
 
@@ -24,10 +28,19 @@ module Gamework
       end
     end
 
-    def make_color
-      return if @color.is_a?(Fixnum)
-      name = @color.upcase
-      @color = Gosu::Color.const_get(name)
+    def get_color(color)
+      return color if color.is_a?(Fixnum)
+      return color if color.is_a?(Gosu::Color)
+      Gosu::Color.const_get(color.upcase)
+    end
+
+    def make_colors
+      if @colors.any?
+        @colors.map! {|c| get_color(c)}
+        @color = @colors.first
+      else
+        @color = get_color(@color)
+      end
     end
 
     def make_shape
@@ -39,25 +52,51 @@ module Gamework
     end
 
     def make_triangle
-      rad = radius
-      @args  = [@x-rad, @y+rad, @color, @x+rad, @y+rad, @color, @x, @y-rad, @color, @z]
+      width  = @width/2
+      height = @height/2
+      x1 = @x-width
+      x2 = @x+width
+      x3 = @x
+      y1 = @y+height
+      y2 = @y-height
+      color1 = @colors[0] || @color
+      color2 = @colors[1] || @color
+      color3 = @colors[2] || @color
+      @args  = [x1, y1, color1, x2, y1, color2, x3, y2, color3, @z]
     end
 
     def make_square
-      rad = radius
-      @args = [@x-rad, @y+rad, @color, @x+rad, @y+radius, @color, @x+radius, @y-radius, @color, @x-radius, @y-radius, @color, @z]
+      @height = @width
+      make_rectangle
     end
 
     def make_rectangle
+      width  = @width/2
+      height = @height/2
+      x1 = @x-width
+      x2 = @x+width
+      y1 = @y-height
+      y2 = @y+height
+      color1 = @colors[0] || @color
+      color2 = @colors[1] || @color
+      color3 = @colors[2] || @color
+      color4 = @colors[3] || @color
+      @args = [x1, y1, color1, x1, y2, color2, x2, y2, color3, x2, y1, color4, @z]
     end
 
     def make_line
     end
 
-    def radius
-      @size/2
+    def make_background
+      x1 = 0
+      y1 = 0
+      x2 = Gamework::App.width
+      y2 = Gamework::App.height
+      color1 = @colors[0] || @color
+      color2 = @colors[1] || @color
+      color3 = @colors[2] || @color
+      color4 = @colors[3] || @color
+      @args = [x1, y1, color1, x1, y2, color2, x2, y2, color3, x2, y1, color4, @z]
     end
-    
-    # draw_quad(x1, y1, c1, x2, y2, c2, x3, y3, c3, x4, y4, c4, z = 0, mode = :default)
   end
 end
