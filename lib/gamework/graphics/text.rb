@@ -2,14 +2,13 @@ module Gamework
   class Text < Gamework::Drawable
     # Represents on screen game text
 
-    attr_reader :text, :font_name, :height,
-                :x, :y, :z, :color
+    attr_reader :text, :font_name, :color
 
-    def initialize(text, options)
+    def initialize(text, options={})
       @text      = text
-      @x         = options[:x] || 0
-      @y         = options[:y] || 0
-      @z         = options[:z] || 1000
+      @x         = options[:x]         || 0
+      @y         = options[:y]         || 0
+      @z         = options[:z]         || 1000
       @color     = options[:color]     || 0xffffffff
       @factor_x  = options[:factor_x]  || 1
       @factor_y  = options[:factor_y]  || 1

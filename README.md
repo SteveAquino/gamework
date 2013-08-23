@@ -1,6 +1,11 @@
 # Gamework
 
-TODO: Write a gem description
+Gamework is a MVC game making framework built on the
+Ruby Gosu library.  By providing a basic application
+structure and utility methods.  Gamework tries to
+remain agnostic as to what kind of game you want to
+build. Gamework aims to bring joy to game development
+with Ruby by simplifying common, low level functions.
 
 ## Installation
 

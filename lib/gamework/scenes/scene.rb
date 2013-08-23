@@ -99,6 +99,12 @@ module Gamework
       !!@paused
     end
 
+    def quit
+      # Utility function to abort the game
+      
+      Gamework::App.quit
+    end
+
     def follow_with_camera(target)
       @camera_target = target
     end
@@ -139,7 +145,8 @@ module Gamework
     def create_actor(id, options={})
       # Alias for Gamework::Actor.create
 
-      actor = Gamework::Actor.create(options)
+      spritesheet = options.delete(:spritesheet)
+      actor = Gamework::Actor.new(spritesheet, options)
       @actors[id] = actor
       if options[:follow]
         follow_with_camera(actor)

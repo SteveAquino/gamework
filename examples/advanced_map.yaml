@@ -26,3 +26,19 @@ actors:
     width: 30
     height: 30
     spritesheet: 'spritesheet.png'
+  npc2:
+    x: 100
+    y: 150
+    width: 30
+    height: 30
+    spritesheet: 'spritesheet.png'
+    animated: true
+  npc3:
+    x: 100
+    y: 200
+    width: 30
+    height: 30
+    spritesheet: 'spritesheet.png'
+    movement:
+      type: 'random'
+      frequency: 3

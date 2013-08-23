@@ -1,4 +1,5 @@
 require 'yaml'
+require "active_support/core_ext/hash"
 
 module Gamework
   class SceneBuilder
@@ -18,7 +19,7 @@ module Gamework
 
     def load
       file  = File.open(@filename, 'r')
-      @data = YAML.load(file)
+      @data = YAML.load(file).with_indifferent_access
     end
     
     def build_scene
@@ -28,25 +29,25 @@ module Gamework
     end
 
     def build_song
-      data = @data["song"]
+      data = @data[:song]
       return if data.nil?
-      @scene.load_song asset_path(data["songfile"]), data["autoplay"]
+      @scene.load_song asset_path(data[:songfile]), data[:autoplay]
     end
 
     def build_actors
-      data = @data["actors"]
+      data = @data[:actors]
       return if data.nil?
       data.each do |id, args|
-        args["spritesheet"] = asset_path(args["spritesheet"])
+        args[:spritesheet] = asset_path(args[:spritesheet])
         @scene.create_actor id.intern, args
       end
     end
 
     def build_tileset
-      data = @data["tileset"]
+      data = @data[:tileset]
       return if data.nil?
-      data["mapfile"] = asset_path(data["mapfile"])
-      data["spritesheet"] = asset_path(data["spritesheet"])
+      data[:mapfile] = asset_path(data[:mapfile])
+      data[:spritesheet] = asset_path(data[:spritesheet])
       @scene.create_tileset *data.values
     end
 

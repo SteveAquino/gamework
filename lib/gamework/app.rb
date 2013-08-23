@@ -80,6 +80,16 @@ module Gamework
         @window.close
       end
 
+      def quit
+        # Empties the scene collection to
+        # allow the game and current scene
+        # to close on the next update
+
+        scene = current_scene
+        scene.end_scene
+        @@scenes = [scene]
+      end
+
       def config(&block)
         # Allow block style configuration settings, ie:
         #

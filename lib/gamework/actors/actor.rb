@@ -1,20 +1,30 @@
 module Gamework
-  class Actor
+  class Actor < Gamework::Drawable
     # An Actor can be thought of as the model part of
     # a Model View Controller framework.  Actors
     # represent the objects and characters that make
     # up your game, each with a sprite, animations
     # and collision detection.
 
-    attr_reader :x, :y, :z, :width, :height,
-                :direction, :moving
+    attr_reader :direction, :moving
 
-    def initialize(x, y, width, height, spritesheet)
-      @x, @y, @width, @height, @spritesheet = x, y, width, height, spritesheet
-      @z = 0
-      @speed = 3
-      @direction = :down
-      @invisible = @moving = @dir_fixed = false
+    def initialize(spritesheet, options={})
+      @spritesheet = spritesheet
+      if options[:position]
+        @x = options[:position][0]
+        @y = options[:position][1]
+      else
+        @x = options[:x] || 0
+        @y = options[:y] || 0
+      end
+      @z         = options[:z]         || 0
+      @width     = options[:width]     || options[:size] || 30
+      @height    = options[:height]    || options[:size] || 30
+      @speed     = options[:speed]     || 3
+      @direction = options[:direction] || :down
+      @invisible = options[:invisible] || false
+      @fixed     = options[:fixed]     || false
+      @moving    = false
     end
 
     def update
@@ -57,7 +67,6 @@ module Gamework
 
     def move(direction)
       turn direction unless @dir_fixed
-      # return if obstructed?(direction)
       
       @moving = true
       case direction
@@ -84,79 +93,25 @@ module Gamework
     def showing?
       !!!@invisible
     end
-    
-    # def collision_box(offset_x=0, offset_y=0)
-    #   # Draws a rectangle from top left corner
-    #   # around an object to represent it's
-    #   # boundary for collision detection
 
-    #   x = @x - (@width  / 2) + offset_x
-    #   y = @y - (@height / 2) + offset_y
-      
-    #   box = { :a => [], :b => [], :c => [], :d => [] }
-      
-    #   box[:a] = [x, y]
-    #   box[:b] = [x + @width, y]
-    #   box[:c] = [x, y + @height]
-    #   box[:d] = [x + @width, y + @height]
-      
-    #   return box
-    # end
+    def collide?(object, direction)
+      # Returns true if the actor is facing
+      # the object it's touching, preventing
+      # him from moving forward.
 
-    # def draw_collision_box(c)
-    #   # For testing, draws a rectangle around the
-    #   # object to show where the 'edges' are for
-    #   # collision detection
-
-    #   $game.draw_quad(collision_box[:a][0], collision_box[:a][1], c, collision_box[:b][0], collision_box[:b][1], c,
-    #                   collision_box[:c][0], collision_box[:c][1], c, collision_box[:d][0], collision_box[:d][1], c, ZOrder::UI) 
-    # end
-    
-    # def touch?(target)
-    #   # Checks to see if the target is a GameObject,
-    #   # otherwise assumes it is a hash
-      
-    #   if target.class.ancestors.include?(GameObject)
-    #     box = target.collision_box
-    #   else
-    #     box = target
-    #   end
-      
-    #   if box[:a][0] > self.collision_box[:b][0]
-    #     return false
-    #   elsif box[:b][0] < self.collision_box[:a][0]
-    #     return false
-    #   elsif box[:a][1] > self.collision_box[:c][1]
-    #     return false
-    #   elsif box[:c][1] < self.collision_box[:a][1]
-    #     return false
-    #   else
-    #     return true
-    #   end
-    # end
-
-    # def collide?(object, direction)
-    #   # Must be a GameObject for collision
-    #   return false if object == self
-    #   case direction
-    #     when :up
-    #       box = object.collision_box(0, 2)
-    #     when :down
-    #       box = object.collision_box(0, -2)
-    #       collide = touch?(box)
-    #     when :left
-    #       box = object.collision_box(2, 0)
-    #       collide = touch?(box)
-    #     when :right
-    #       box = object.collision_box(-2, 0)
-    #       collide = touch?(box)
-    #   end
-    #   return touch?(box)
-    # end
-
-    # def obstructed?(direction)
-    #   Npc.all.any? {|npc| collide?(npc, direction)  }
-    # end
+      return false if object == self
+      return false unless touch?(object)
+      case direction.intern
+        when :up
+          object.y < @y
+        when :down
+          object.y > @y
+        when :left
+          object.x < @x
+        when :right
+          object.x > @x
+      end
+    end
     
     # def move_towards(target)
     #   if target.class.ancestors.include?(GameObject)
@@ -173,30 +128,5 @@ module Gamework
     # def move_away_from(target)
     #   # should mirror move_towards(target)
     # end
-
-    def self.create(options={})
-      # Allows creation with a hash of options
-
-      options.keys.each do |key|
-        options[(key.to_sym rescue key) || key] = options.delete(key)
-      end
-
-      if options[:position]
-        x = options[:position][0]
-        y = options[:position][1]
-      else
-        x = options[:x]
-        y = options[:y]
-      end
-      if options[:size]
-        height = width = options[:size]
-      else
-        height = options[:height]
-        width  = options[:width]
-      end
-      spritesheet = options[:spritesheet]
-
-      new(x, y, width, height, spritesheet)
-    end
   end
 end

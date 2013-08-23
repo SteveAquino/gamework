@@ -4,6 +4,7 @@ require 'pry'
 
 class StartScene < Gamework::Scene
   on_button_down 'return', 'kb', :end_scene
+  on_button_down 'escape', 'kb', :quit
 
   def start_scene
     # Draw Triangles
@@ -24,6 +25,7 @@ end
 class CoolScene < Gamework::Scene
   on_button_down 'escape', 'kb', :end_scene
   on_button_toggle ['up', 'down', 'left', 'right'], 'kb', :move_player, :stop_player
+  on_button_toggle ['w', 's', 'a', 'd'], 'kb', :move_player, :stop_player
 
   has_assets "spec/media"
 
@@ -40,8 +42,24 @@ class CoolScene < Gamework::Scene
     @hud.update_text "Score #{@score}"
   end
 
+  def map_direction_key(dir)
+    # Maps WASD to directions
+
+    map = {w: 'up', s: 'down', a: 'left', d: 'right'}
+    map[dir.intern] || dir
+  end
+
   def move_player(dir)
-    player.move(dir.intern)
+    dir = map_direction_key(dir)
+    if player_collision(dir)
+      stop_player
+    else
+      player.move(dir.intern)
+    end
+  end
+
+  def player_collision(dir)
+    @actors.any? {|name, actor| player.collide?(actor, dir)}
   end
 
   def stop_player(dir=nil)
@@ -57,7 +75,7 @@ Gamework::App.config do |c|
   c.width  = 800
   c.height = 640
   c.title  = "Advanced Example"
-  # c.debug_mode = true
+  c.debug_mode = true
 end
 
 Gamework::App.start do
