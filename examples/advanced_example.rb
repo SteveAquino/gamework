@@ -8,17 +8,33 @@ class StartScene < Gamework::Scene
 
   def start_scene
     # Draw Triangles
-    x = Gamework::App.center_x
+    x = Gamework::App.center_x - 50
     shades = [0xffbbbbbb00, 0xffffff00, 0xffffffbb]
-    show_shape :triangle,  x: x+50, y: 300, size: 100, colors: shades
-    show_shape :triangle,  x: x-50, y: 300, size: 100, colors: shades
-    show_shape :triangle,  x: x,    y: 200, size: 100, colors: shades
+    show_shape :triangle,  x: x+50, y: 350, size: 100, colors: shades
+    show_shape :triangle,  x: x-50, y: 350, size: 100, colors: shades
+    show_shape :triangle,  x: x,    y: 250, size: 100, colors: shades
     draw_background colors: [0xff000033, 0xff000033, 0xff000044, 0xff000033]
 
     # Draw text
-    show_text "Example Game", x: 250, y: 50, size: 50, color: shades.last
-    show_text "Press ENTER to Start", x: 310, y: 500, size: 20
-    show_text "Powered by Gamework v#{Gamework::VERSION}", x: 305, y: 600, size: 15
+    show_text "Example Game", y: 50, height: 50, width: Gamework::App.width, justify: :center
+    show_text "Powered by Gamework v#{Gamework::VERSION}", y: 600, height: 15, width: Gamework::App.width, justify: :center
+    draw_menu
+  end
+
+  def draw_menu
+    x = Gamework::App.center_x - 160
+    @menu = Gamework::Menu.new(x: x, y: 480, width: 300, margin: 10, padding: 10)
+    @menu.add_option "Start Game", :end_scene
+    @menu.add_option "Quit", :quit
+    @menu.add_background color: 0x77000000
+  end
+
+  def before_update
+    @menu.update
+  end
+
+  def before_draw
+    @menu.draw
   end
 end
 
@@ -52,6 +68,7 @@ class CoolScene < Gamework::Scene
   def move_player(dir)
     dir = map_direction_key(dir)
     if player_collision(dir)
+      player.turn(dir.intern)
       stop_player
     else
       player.move(dir.intern)

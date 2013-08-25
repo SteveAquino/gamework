@@ -6,12 +6,28 @@ module Gamework
 
     attr_reader :drawables, :fixed
 
+    def initialize
+      @drawables = []
+    end
+
     def draw
       @drawables.each {|d| d.draw}
     end
 
     def update
       @drawables.each {|d| d.update}
+    end
+
+    def add_drawable(drawable)
+      @drawables << drawable
+    end
+
+    def <<(drawable)
+      add_drawable(drawable)
+    end
+
+    def delete_drawable(drawable)
+      @drawables.delete(drawable)
     end
 
     def fix

@@ -13,6 +13,7 @@ require "gamework/graphics/sprite"
 require "gamework/graphics/text"
 require "gamework/graphics/shape"
 require "gamework/composites/composite"
+require "gamework/composites/menu"
 require "gamework/actors/actor"
 
 module Gamework

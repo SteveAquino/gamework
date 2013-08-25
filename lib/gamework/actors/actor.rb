@@ -10,21 +10,21 @@ module Gamework
 
     def initialize(spritesheet, options={})
       @spritesheet = spritesheet
-      if options[:position]
-        @x = options[:position][0]
-        @y = options[:position][1]
-      else
-        @x = options[:x] || 0
-        @y = options[:y] || 0
+      defaults = {
+        x: 0, y: 0,
+        width:  options[:size]||30,
+        height: options[:size]||30,
+        speed:  3,
+        direction: :down,
+        invisible: false,
+        moving:    false,
+        fixed:     false
+      }
+      if (pos = options.delete :position)
+        options[:x] = pos[0]
+        options[:y] = pos[1]
       end
-      @z         = options[:z]         || 0
-      @width     = options[:width]     || options[:size] || 30
-      @height    = options[:height]    || options[:size] || 30
-      @speed     = options[:speed]     || 3
-      @direction = options[:direction] || :down
-      @invisible = options[:invisible] || false
-      @fixed     = options[:fixed]     || false
-      @moving    = false
+      set_options(defaults.merge options)
     end
 
     def update
@@ -37,18 +37,6 @@ module Gamework
 
     def sprite
       @sprite ||= Sprite.new(@x, @y, @width, @height, @spritesheet)
-    end
-
-    def set_position(x, y)
-      @x, @y = x, y
-    end
-    
-    def pos?(x, y)
-      [@x, @y] == [x, y]
-    end
-
-    def resize(width, height)
-      @width, @height = width, height
     end
 
     def turn(direction)
@@ -94,27 +82,29 @@ module Gamework
       !!!@invisible
     end
 
-    def collide?(object, direction)
+    def collide?(object, direction, offset=0)
       # Returns true if the actor is facing
       # the object it's touching, preventing
       # him from moving forward.
 
       return false if object == self
-      return false unless touch?(object)
+      offset_x = 0
+      offset_y = 0
       case direction.intern
         when :up
-          object.y < @y
+          offset_y = -(@height/2)-offset
         when :down
-          object.y > @y
+          offset_y = (@height/2)+offset
         when :left
-          object.x < @x
+          offset_x = -(@width/2)+offset
         when :right
-          object.x > @x
+          offset_x = (@width/2)-offset
       end
+      touch?(object, offset_x, offset_y)
     end
     
     # def move_towards(target)
-    #   if target.class.ancestors.include?(GameObject)
+    #   if target.class.ancestors.include?(Gamework::Drawable)
     #     coords = [target.x, target.y]
     #   else
     #     coords = target

@@ -3,18 +3,23 @@ module Gamework
     # Creates a basic shape based on
     # given type and options.
 
-    attr_reader :type, :color, :colors, :options
+    attr_reader :type
 
     def initialize(type, options={})
-      @type   = type.intern
-      @x      = options[:x]      || 0
-      @y      = options[:y]      || 0
-      @z      = options[:z]      || 1000
-      @width  = options[:width]  || options[:size] || 50
-      @height = options[:height] || options[:size] || 50
-      @color  = options[:color]  || 0xffffffff
-      @colors = options[:colors] || []
-      @fixed  = options[:fixed]  || false
+      @type    = type.intern
+      defaults = {
+        x: 0, y: 0, z: 1000,
+        width:  50,
+        height: 50,
+        color:  0xffffffff,
+        colors: [],
+        fixed:  false
+      }
+      if (size = options.delete :size)
+        options[:width] = size
+        options[:height] = size
+      end
+      set_options(defaults.merge options)
       @args   = []
       make_colors
       make_shape
@@ -52,13 +57,11 @@ module Gamework
     end
 
     def make_triangle
-      width  = @width/2
-      height = @height/2
-      x1 = @x-width
-      x2 = @x+width
-      x3 = @x
-      y1 = @y+height
-      y2 = @y-height
+      x1 = @x
+      x2 = @x+@width
+      x3 = @x+@width/2
+      y1 = @y
+      y2 = @y-@height
       color1 = @colors[0] || @color
       color2 = @colors[1] || @color
       color3 = @colors[2] || @color
@@ -71,9 +74,9 @@ module Gamework
     end
 
     def make_rectangle
-      x1 = @x-@width
+      x1 = @x
       x2 = @x+@width
-      y1 = @y-@height
+      y1 = @y
       y2 = @y+@height
       color1 = @colors[0] || @color
       color2 = @colors[1] || @color
@@ -91,6 +94,17 @@ module Gamework
       @width  = Gamework::App.width
       @height = Gamework::App.height
       make_rectangle
+    end
+
+    def set_position(x, y)
+      return if pos?(x,y)
+      @x, @y = x, y
+      make_shape
+    end
+
+    def resize(width, height)
+      @width, @height = width, height
+      make_shape
     end
   end
 end
