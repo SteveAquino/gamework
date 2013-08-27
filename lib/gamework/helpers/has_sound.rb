@@ -3,6 +3,8 @@ module Gamework
     # Allows objects to easily interact with the
     # Gosu::Sample and Gosu::Song API.
 
+    # Hold a single reference to a song since
+    # only one song can play at a time.
     @@song = nil
 
     def load_song(file, autoplay=true)

@@ -2,9 +2,12 @@ require 'rubygems'
 require 'gamework'
 require 'pry'
 
+# Opening Title Scene
 class StartScene < Gamework::Scene
-  on_button_down 'return', 'kb', :end_scene
+  has_assets "spec/media"
   on_button_down 'escape', 'kb', :quit
+  on_button_down 'return', 'kb', :select_option
+  on_button_up ['up', 'down'], 'kb', :move_cursor
 
   def start_scene
     # Draw Triangles
@@ -18,32 +21,42 @@ class StartScene < Gamework::Scene
     # Draw text
     show_text "Example Game", y: 50, height: 50, width: Gamework::App.width, justify: :center
     show_text "Powered by Gamework v#{Gamework::VERSION}", y: 600, height: 15, width: Gamework::App.width, justify: :center
-    draw_menu
+    show_menu
   end
 
-  def draw_menu
+  def show_menu
+    # Create menu with options
     x = Gamework::App.center_x - 160
-    @menu = Gamework::Menu.new(x: x, y: 480, width: 300, margin: 10, padding: 10)
-    @menu.add_option "Start Game", :end_scene
-    @menu.add_option "Quit", :quit
+    @menu = Gamework::Menu.new x: x, y: 480, width: 300, margin: 10, padding: 10
+    @menu.add_option "Start Game"
+    @menu.add_option "Quit"
     @menu.add_background color: 0x77000000
+    @menu.add_cursor
+    add_drawable(@menu)
   end
 
-  def before_update
-    @menu.update
+  def move_cursor(dir)
+    @menu.move_cursor(dir)
+    play_sound :menu_move, asset_path('menu_move.wav')
   end
 
-  def before_draw
-    @menu.draw
+  def select_option
+    case @menu.cursor_position
+    when 0
+      end_scene
+    when 1
+      quit
+    end
+    play_sound :menu_select, asset_path('menu_select.wav')
   end
 end
 
+# Map Scene
 class CoolScene < Gamework::Scene
+  has_assets "spec/media"
   on_button_down 'escape', 'kb', :end_scene
   on_button_toggle ['up', 'down', 'left', 'right'], 'kb', :move_player, :stop_player
   on_button_toggle ['w', 's', 'a', 'd'], 'kb', :move_player, :stop_player
-
-  has_assets "spec/media"
 
   # Load scene from yaml file
   build_scene "examples/advanced_map.yaml"
@@ -79,7 +92,7 @@ class CoolScene < Gamework::Scene
     @actors.any? {|name, actor| player.collide?(actor, dir)}
   end
 
-  def stop_player(dir=nil)
+  def stop_player
     player.stop
   end
   

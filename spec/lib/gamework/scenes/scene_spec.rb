@@ -10,7 +10,7 @@ describe Gamework::Scene do
       MockScene.build_scene(path)
       MockScene.any_instance.stub(:build_scene)
       MockScene.any_instance.should_receive(:build_scene)
-      scene = MockScene.new
+      scene = MockScene.new.load_assets
     end
   end
 

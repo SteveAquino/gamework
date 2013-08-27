@@ -38,7 +38,15 @@ module Gamework
     end
     
     def call_block_or_array(block_or_array)
+      # Takes a block or an array of arguments
+      # for the send call
+
       if block_or_array.kind_of?(Array)
+        # Try sending the button id with
+        # the callback.  If the call fails,
+        # try sending the callback without
+        # arguments
+
         begin
           send(*block_or_array)
         rescue ArgumentError

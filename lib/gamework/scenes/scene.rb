@@ -8,7 +8,6 @@ module Gamework
     include Gamework::HasAssets
     include Gamework::HasSound
     include Gamework::HasInput
-    include Gamework::HasShapes
 
     @scene_file = nil
     attr_reader :tileset, :actors, :paused, :fixed, :unfixed
@@ -22,9 +21,16 @@ module Gamework
       @actors  = {}
       @fixed   = []
       @unfixed = []
+      @built   = false
+    end
+
+    def load_assets
+      # Delay building scene until it's
+      # the current scene.
 
       build_scene(scene_file) if scene_file
       start_scene
+      @built = true
     end
 
     # Define hook methods to allow flexible
@@ -40,9 +46,9 @@ module Gamework
 
     def update
       # TODO:
-      # HUD
       # Events
       # Animations
+      load_assets unless @built
 
       before_update
 
@@ -191,6 +197,10 @@ module Gamework
       return drawable
     end
 
+    def <<(drawable)
+      add_drawable(drawable)
+    end
+
     def delete_drawable(drawable)
       # Removes a drawable object
 
@@ -215,10 +225,6 @@ module Gamework
       filename = File.expand_path(scene_file)
       @scene_file = filename
     end
-
-    # def draw_window(id, *args)
-    #   @windows[id] = GameWindow.new(*args)
-    # end
 
     private
 

@@ -4,7 +4,7 @@ module Gamework
     # that need to respond to update and
     # draw on each frame.
 
-    attr_reader :x, :y, :z, :height, :width, :fixed
+    attr_reader :x, :y, :z, :width, :height, :fixed
 
     def draw; end
     def update; end
@@ -72,12 +72,9 @@ module Gamework
     private
 
     def set_options(options, writer=false)
-      # Creates instance variables and
-      # reader methods from a hash.
+      # Creates instance variables from a hash.
 
-      attr_method = writer ? :attr_accessor : :attr_reader
       options.each do |key, value|
-        self.class.send attr_method, key
         instance_variable_set "@#{key}", value
       end
     end
