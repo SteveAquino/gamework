@@ -18,7 +18,9 @@ module Gamework
         direction: :down,
         invisible: false,
         moving:    false,
-        fixed:     false
+        animated:  false,
+        fixed:     false,
+        movement:  {}
       }
       if (pos = options.delete :position)
         options[:x] = pos[0]
@@ -29,6 +31,7 @@ module Gamework
 
     def update
       sprite.update
+      update_auto_movement
     end
 
     def draw
@@ -36,16 +39,14 @@ module Gamework
     end
 
     def sprite
-      @sprite ||= Sprite.new(@x, @y, @width, @height, @spritesheet)
+      # Lazy load the actor sprite
+
+      @sprite ||= Sprite.new(@x, @y, @width, @height, @spritesheet, @animated)
     end
 
     def turn(direction)
       @direction = direction
       sprite.turn direction
-    end
-
-    def step_forward
-      move @direction
     end
     
     def stop
@@ -118,5 +119,49 @@ module Gamework
     # def move_away_from(target)
     #   # should mirror move_towards(target)
     # end
+
+    def update_auto_movement
+      # Creates threads for new movements
+      # to update in parallel to other
+      # processes
+
+      return if @movement[:moving]
+      distance = @movement[:distance] || @width
+      delay    = @movement[:delay]    || 1
+      if @movement[:type].to_s == 'random'
+        Thread.new { random_movement(distance, delay) }
+      end
+    end
+
+    def random_movement(distance, delay)
+      # TODO: Check for collision first
+
+      @movement[:moving] = true
+      # Random direction
+      dir = %w(up down left right)[rand(4)]
+      
+      # Move between 0 and 2 steps
+      steps = rand(3)
+      steps.times do
+        turn(dir.intern)
+        step(distance)
+      end
+      sleep delay
+      @movement[:moving] = false
+    end
+
+    def step(distance)
+      # Moves a given distance over 1
+      # second basedo on the actor's speed
+
+      i = 0
+      t = 1/(distance.to_f/@speed.to_f)
+      while i < distance
+        move @direction
+        sleep t
+        i += @speed
+      end
+      stop
+    end
   end
 end

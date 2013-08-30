@@ -3,8 +3,7 @@ song:
   autoplay: true
 tileset:
   mapfile: 'simple_map.txt'
-  tile_width: 32
-  tile_height: 32
+  tile_size: 32
   spritesheet: 'tileset.png'
   mapkey:
     '.': 0
@@ -34,11 +33,12 @@ actors:
     spritesheet: 'spritesheet.png'
     animated: true
   npc3:
-    x: 100
-    y: 200
+    x: 150
+    y: 100
     width: 30
     height: 30
     spritesheet: 'spritesheet.png'
     movement:
       type: 'random'
       frequency: 3
+      distance: 32

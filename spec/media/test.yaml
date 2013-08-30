@@ -2,8 +2,7 @@ song:
   songfile: 'song.png'
   autoplay: true
 tileset:
-  tile_width: 30
-  tile_height: 30
+  tile_size: 30
   spritesheet: 'tileset.png'
   mapfile: 'map.txt'
 actors:

@@ -6,7 +6,7 @@ describe Gamework::Tileset do
     it "creates an array of sprites" do
       path    = File.expand_path "../../../../media/tileset.png", __FILE__
       window  = Gamework::Window.new(1,1)
-      tileset = Gamework::Tileset.new(32, 32, path)
+      tileset = Gamework::Tileset.new(32, path)
       Gamework::App.stub(:window).and_return(window)
       Gosu::Image.any_instance.stub(:initialize)
 
@@ -21,7 +21,7 @@ describe Gamework::Tileset do
       it "creates a nested array of tiles" do
         expected = [[0]*10,[1]*10,[2]*10,[3]*10] 
         path     = File.expand_path "../../../../media/map.txt", __FILE__
-        tileset  = Gamework::Tileset.new(32, 32, "test.png")
+        tileset  = Gamework::Tileset.new(32, "test.png")
         tileset.make_tiles(path)
         tileset.tiles.should eq(expected)
       end
@@ -32,7 +32,7 @@ describe Gamework::Tileset do
         expected = [[0]*10,[1]*10,[2]*10,[3]*10,[4]*10]
         path     = File.expand_path "../../../../media/map2.txt", __FILE__
         mapkey   = {'.' => 0, ',' => 1, '#' => 2, 't' => 3, 'x' => 4}
-        tileset  = Gamework::Tileset.new(32, 32, "test.png", mapkey)
+        tileset  = Gamework::Tileset.new(32, "test.png", mapkey)
         tileset.make_tiles(path)
         tileset.tiles.should eq(expected)
       end
@@ -41,7 +41,7 @@ describe Gamework::Tileset do
 
   describe "#get_tile" do
     it "returns the correct sprite index for a tile at a given x,y coordinate" do
-      tileset = Gamework::Tileset.new(32, 32, "test.png")
+      tileset = Gamework::Tileset.new(32, "test.png")
       tiles   = [[0,1,2,3],[1,2,3,0],[2,3,1,0],[3,0,1,2]]
       tileset.instance_variable_set "@tiles", tiles
       tileset.get_tile(2,0).should eq(2)
@@ -50,7 +50,7 @@ describe Gamework::Tileset do
 
   describe "#get_sprite" do
     it "returns the correct sprite index for a tile at a given x,y coordinate" do
-      tileset = Gamework::Tileset.new(32, 32, "test.png")
+      tileset = Gamework::Tileset.new(32, "test.png")
       tiles   = [[0,1,2,3],[1,2,3,0],[2,3,1,0],[3,0,1,2]]
       tileset.instance_variable_set "@tiles", tiles
       tileset.instance_variable_set "@sprites", [:a,:b,:c,:d]
@@ -60,7 +60,7 @@ describe Gamework::Tileset do
 
   describe "#draw_tile" do
     it "draws the correct sprite for a given x,y coordinate" do
-      tileset = Gamework::Tileset.new(32, 32, "test.png")
+      tileset = Gamework::Tileset.new(32, "test.png")
       tiles   = [[0,1,2,3],[1,2,3,0],[2,3,1,0],[3,0,1,2]]
       tileset.instance_variable_set "@tiles", tiles
       class MockSprite
@@ -82,7 +82,7 @@ describe Gamework::Tileset do
 
   describe "#draw" do
     it "calls draw on each tile on the map" do
-      tileset = Gamework::Tileset.new(32, 32, "test.png")
+      tileset = Gamework::Tileset.new(32, "test.png")
       tiles   = [[0,1,2,3],[1,2,3,0],[2,3,1,0],[3,0,1,2]]
       tileset.instance_variable_set "@tiles", tiles
       class CountSprite

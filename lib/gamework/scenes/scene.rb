@@ -125,11 +125,11 @@ module Gamework
       
       @camera_x = [
         [target.x - (half_width),  0].max,
-        target.width * @tileset.tile_width - half_width
+        target.width * @tileset.tile_size - half_width
       ].min
       @camera_y = [
         [target.y - (half_height), 0].max,
-        target.height * @tileset.tile_height - half_height
+        target.height * @tileset.tile_size - half_height
       ].min
     end
 

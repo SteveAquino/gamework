@@ -5,12 +5,13 @@ module Gamework
 
     attr_reader :x, :y, :width, :height, :direction, :moving, :animating
 
-    def initialize(x, y, width, height, spritesheet)
+    def initialize(x, y, width, height, spritesheet, animated=false)
       @x, @y, @width, @height = x, y, width, height
       @spritesheet = spritesheet
       @frame       = 0
       @speed       = 3
       @moving      = false
+      @animated    = animated
       @z           = 1
       @scale       = 2
       @direction   = :down
@@ -20,12 +21,10 @@ module Gamework
     end
 
     def draw
-      # Hide sprite when the animating
-      return if @animating
-
       # Use draw_rot to use the center as the reference
       # point, allowing the character to walk to edge of
       # the screen.
+      
       @sprite.draw_rot(@x, @y, z_index, 0, 0.5, 0.5, @scale, @scale)
     end
 
@@ -40,7 +39,7 @@ module Gamework
       # If the sprite isn't animating, the first
       # frame is shown
 
-      if @moving
+      if @moving || @animated
         # Draw sprite animations in frames at 60 FPS
         i = Gosu::milliseconds / 60 % @sprites[@direction].size - 1
         @frame = i + 1
@@ -130,12 +129,16 @@ module Gamework
       @moving = true
     end
 
-    def step_forward
-      move @direction
-    end
-
     def stop
       @moving = false
+    end
+
+    def animate
+      @animated = true
+    end
+
+    def freeze
+      @animated = false
     end
   end
 end

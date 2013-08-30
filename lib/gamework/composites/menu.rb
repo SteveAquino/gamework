@@ -67,14 +67,30 @@ module Gamework
 
 
     def move_cursor(direction)
+      @cursor_position = next_cursor_index(direction)
+      reposition_cursor
+    end
+
+    def next_cursor_index(direction)
+      # Determine the next possible index
+      # for the cursor based for a given
+      # direction
+
+      last    = @menu_options.size - 1
+      current = @cursor_position
       case direction.intern
       when :up
-        return if @cursor_position == 0
-        @cursor_position -= 1
+        current == 0 ? last : current-1
       when :down
-        return if @cursor_position == (@menu_options.size-1)
-        @cursor_position += 1
+        current == last ? 0 : current+1
       end
+    end
+
+    def reposition_cursor
+      # Reset the cursor shape position
+      # based on the current value of
+      # cursor_position
+
       full_height = @margin + @height
       y = @y + @padding + (full_height*@cursor_position)
       @cursor.set_position @cursor.x, y

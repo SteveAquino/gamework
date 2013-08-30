@@ -1,10 +1,9 @@
 module Gamework
   class Tileset
-    attr_reader :tile_width, :tile_height, :tiles, :mapkey,
-                :spritesheet, :sprites
+    attr_reader :tile_size, :mapkey, :tiles, :sprites
 
-    def initialize(tile_width, tile_height, spritesheet, mapkey=nil)
-      @tile_width, @tile_height, @spritesheet, @mapkey = tile_width, tile_height, spritesheet, mapkey
+    def initialize(tile_size, spritesheet, mapkey=nil)
+      @tile_size, @spritesheet, @mapkey = tile_size, spritesheet, mapkey
     end
 
     def draw
@@ -23,10 +22,10 @@ module Gamework
 
     def make_sprites
       # Calls Gosu::Image.load_tiles which splits a
-      # given graphic file into @tile_width x @tile_height tiles
+      # given graphic file into @tile_size squares
       # and returns an array of Gosu::Images
 
-      @sprites = Gosu::Image.load_tiles(Gamework::App.window, @spritesheet, @tile_width, @tile_height, true)
+      @sprites = Gosu::Image.load_tiles(Gamework::App.window, @spritesheet, @tile_size, @tile_size, true)
     end
 
     def make_tiles(mapfile)
@@ -55,7 +54,7 @@ module Gamework
     def draw_tile(x,y)
       sprite = get_sprite(x,y)
       if sprite
-        sprite.draw(x * @tile_width, y * @tile_height, 0)
+        sprite.draw(x * @tile_size, y * @tile_size, 0)
       end
     end
 
