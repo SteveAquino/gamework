@@ -58,7 +58,7 @@ Gamework::App.config do |c|
   c.width  = 800
   c.height = 640
   c.title  = "Simple Example"
-  # c.debug_mode = true
+  # c.debug = true
 end
 
 Gamework::App.start do

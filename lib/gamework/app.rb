@@ -1,9 +1,11 @@
 module Gamework
   module App
-    # The Gamework::App module manages opening and closing the
-    # game window.  There is only ever one instance of Gamework::Window
-    # that is accessible elsewhere in the app by calling
-    # Gamework::App.window
+    # The Gamework::App module bridges the gap between
+    # the current window, player input, and the current
+    # scene.  There is a pointer to a single instance
+    # of a window and the current scene.  Scenes can
+    # be prepared before the game loads or during
+    # exectution of another Scene.
 
     @@scenes = []
 
@@ -11,32 +13,29 @@ module Gamework
       # Class Methods (accessible via Gamework::App#method)
 
       @showing = false
-      attr_accessor :width, :height, :fullscreen, :debug_mode, :title
+      attr_accessor :width, :height, :fullscreen, :debug, :title, :caption
 
       def update
-        # Updates the current Scene instance
-        # at the front of the collection
+        # Delegate update to the current scene
 
-        # First check for and remove the current Scene
-        # if it's marked for deletion
+        # Remove the current Scene if it's marked for deletion
         @@scenes.shift if current_scene and current_scene.ended?
-
-      	unless current_scene.nil?
-          current_scene.update
-        else
-          exit
-        end
+        # Update the current scene exists, otherwise exot
+      	current_scene ? current_scene.update : exit
       end
 
       def draw
+        # Delegate draw to the current scene
 				current_scene and current_scene.draw
       end
 
       def button_down(id)
+        # Delegate input to the current scene
         current_scene and current_scene.button_down(id)
       end
 
       def button_up(id)
+        # Delegate input to the current scene
         current_scene and current_scene.button_up(id)
       end
 
@@ -50,6 +49,7 @@ module Gamework
 
       def make_window
         @window ||= Gamework::Window.new(@width, @height, !!@fullscreen)
+        caption ||= @title
       end
 
       def show
@@ -65,14 +65,14 @@ module Gamework
       end
 
       def start(&block)
-      	# Creates a new window, runs an
-      	# optional block, and then begins
-      	# the main game loop
+      	# Creates a new window and starts
+        # the main game loop with an optional
+        # block called before.
 
-        return if showing?
-        make_window
+        # Don't allow the game to start twice
+        raise "The game has already started." if showing?
         yield if block_given?
-        show
+        make_window and show
       end
 
       def exit
@@ -145,13 +145,18 @@ module Gamework
         @fullscreen = val
       end
 
+      def caption=(val)
+        @caption = val
+        window && window.caption = val
+      end
+
       def debug_mode?
         !!@debug
       end
 
-      def debug_mode=(val)
+      def debug=(val)
         raise_config_error if showing?
-        @debug_mode = val
+        @debug = val
       end
 
       def center_x

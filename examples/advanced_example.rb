@@ -64,6 +64,7 @@ class CoolScene < Gamework::Scene
   on_button_down 'escape', 'kb', :end_scene
   on_button_toggle ['up', 'down', 'left', 'right'], 'kb', :move_player, :stop_player
   on_button_toggle ['w', 's', 'a', 'd'], 'kb', :move_player, :stop_player
+  on_button_toggle 'tab', 'kb', :show_debug, :hide_debug
 
   # Load scene from yaml file
   build_scene "examples/advanced_map.yaml"
@@ -97,13 +98,25 @@ class CoolScene < Gamework::Scene
   def player
     @actors[:player]
   end
+
+  def show_debug
+    if Gamework::App.debug_mode?
+      time  = Time.now.localtime.strftime("%r")
+      title = Gamework::App.title
+      Gamework::App.caption = "#{title} (#{Gosu.fps} fps), Current Time: #{time}"
+    end
+  end
+
+  def hide_debug
+    Gamework::App.caption = Gamework::App.title
+  end
 end
 
 Gamework::App.config do |c|
   c.width  = 800
   c.height = 640
   c.title  = "Advanced Example"
-  c.debug_mode = true
+  c.debug = true
 end
 
 Gamework::App.start do
