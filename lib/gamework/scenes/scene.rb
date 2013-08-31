@@ -54,7 +54,6 @@ module Gamework
 
       update_input unless paused?
       update_camera(@camera_target) if @camera_target
-      update_actors
       update_drawables
 
       after_update
@@ -62,21 +61,20 @@ module Gamework
     
     def draw
       # TODO:
-      # HUD
       # Events
       # Animations
       # Dialogue windows
 
-      # Fixed visualizations go here (HUD, ect...)
       before_draw
 
+      # Fixed visualizations go here (HUD, ect...)
       @fixed.each {|d| d.draw }
+
       draw_relative do
         # Objects that scroll with the camera go here
 
-        @actors.values.each {|a| a.draw }
+        @unfixed.each {|d| d.draw if inside_viewport?(d) }
         @tileset.draw if @tileset
-        @unfixed.each {|d| d.draw }
       end
 
       after_draw
@@ -87,6 +85,13 @@ module Gamework
       # pan graphics with camera movement
 
       Gamework::App.window.translate(camera_x, camera_y) { yield }
+    end
+
+    def inside_viewport?(object)
+      width  = Gamework::App.width
+      height = Gamework::App.height
+      (object.x+object.width/2)  >= @camera_x && (object.x-object.width/2)  <= (@camera_x + width) &&
+      (object.y+object.height/2) >= @camera_y && (object.y+object.height/2) <= (@camera_y + height)
     end
 
     def end_scene
@@ -133,14 +138,15 @@ module Gamework
       ].min
     end
 
-    def update_actors
-      @actors.values.each {|a| a.update }
+    def update_drawables
+      # Restricts updating to Drawable instances
+      # within the current viewport
+
+      @fixed.each   {|d| d.update }
+      @unfixed.each {|d| d.update if inside_viewport?(d) }
     end
 
-    def update_drawables
-      @fixed.each {|d| d.update }
-      @unfixed.each {|d| d.update }
-    end
+    # Creation Utility Functions
 
     def create_tileset(mapfile, *args)
       # Alias for Gamework::Tileset.create
@@ -157,7 +163,7 @@ module Gamework
       if options[:follow]
         follow_with_camera(actor)
       end
-      return actor
+      add_drawable(actor) && actor
     end
 
     def create_actors(actors={})
@@ -183,7 +189,7 @@ module Gamework
       # Draws a :background type shape
       # below other drawables
 
-      settings = {z: -1}.merge(options)
+      settings = {z: -1, fixed: true}.merge(options)
       show_shape(:background, settings)
     end
 
@@ -198,7 +204,7 @@ module Gamework
     end
 
     def <<(drawable)
-      add_drawable(drawable)
+      add_drawable drawable
     end
 
     def delete_drawable(drawable)

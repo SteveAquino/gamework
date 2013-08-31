@@ -87,17 +87,7 @@ class CoolScene < Gamework::Scene
 
   def move_player(dir)
     dir = map_direction_key(dir)
-    if player_collision(dir)
-      player.turn(dir.intern)
-      stop_player
-    else
-      player.move(dir.intern)
-    end
-  end
-
-  def player_collision(dir)
-    # TODO: Limit to tiles around player
-    @actors.any? {|name, actor| player.collide?(actor, dir)}
+    player.move(dir.intern)
   end
 
   def stop_player

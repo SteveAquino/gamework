@@ -56,6 +56,7 @@ module Gamework
 
     def move(direction)
       turn direction unless @dir_fixed
+      return(stop) if scene_collision(Gamework::App.current_scene)
       
       @moving = true
       case direction
@@ -102,6 +103,11 @@ module Gamework
           offset_x = (@width/2)-offset
       end
       touch?(object, offset_x, offset_y)
+    end
+
+    def scene_collision(scene)
+      return false unless scene && scene.actors
+      scene.actors.any? {|name, actor| collide?(actor, @direction)}
     end
     
     # def move_towards(target)
@@ -152,7 +158,7 @@ module Gamework
 
     def step(distance)
       # Moves a given distance over 1
-      # second basedo on the actor's speed
+      # second based on the actor's speed
 
       i = 0
       t = 1/(distance.to_f/@speed.to_f)
