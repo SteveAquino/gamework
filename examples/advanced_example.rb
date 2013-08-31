@@ -11,17 +11,24 @@ class StartScene < Gamework::Scene
 
   def start_scene
     # Draw Triangles
-    x = Gamework::App.center_x - 50
-    shades = [0xffbbbbbb00, 0xffffff00, 0xffffffbb]
-    show_shape :triangle,  x: x+50, y: 350, size: 100, colors: shades
-    show_shape :triangle,  x: x-50, y: 350, size: 100, colors: shades
-    show_shape :triangle,  x: x,    y: 250, size: 100, colors: shades
-    draw_background colors: [0xff000033, 0xff000033, 0xff000044, 0xff000033]
+    show_logo
 
     # Draw text
     show_text "Example Game", y: 50, height: 50, width: Gamework::App.width, justify: :center
     show_text "Powered by Gamework v#{Gamework::VERSION}", y: 600, height: 15, width: Gamework::App.width, justify: :center
+
+    # Draw menu
     show_menu
+  end
+
+  def show_logo
+    # Draw three triangles centered in the screen
+    x = Gamework::App.center_x - 50
+    shades = [0xffbbbbbb00, 0xffffff00, 0xffffffbb]
+    show_shape :triangle,  x: x,    y: 250, size: 100, colors: shades
+    show_shape :triangle,  x: x+50, y: 350, size: 100, colors: shades
+    show_shape :triangle,  x: x-50, y: 350, size: 100, colors: shades
+    draw_background colors: [0xff000033, 0xff000033, 0xff000044, 0xff000033]
   end
 
   def show_menu
@@ -89,6 +96,7 @@ class CoolScene < Gamework::Scene
   end
 
   def player_collision(dir)
+    # TODO: Limit to tiles around player
     @actors.any? {|name, actor| player.collide?(actor, dir)}
   end
 

@@ -41,4 +41,3 @@ actors:
     movement:
       type: 'random'
       frequency: 3
-      distance: 32
