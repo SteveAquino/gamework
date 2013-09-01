@@ -15,6 +15,10 @@ module Gamework
         colors: [],
         fixed:  false
       }
+      if (pos = options.delete :position)
+        options[:x] = pos[0]
+        options[:y] = pos[1]
+      end
       if (size = options.delete :size)
         options[:width] = size
         options[:height] = size
@@ -28,6 +32,9 @@ module Gamework
     def draw
       if triangle?
         Gamework::App.window.draw_triangle(*@args)
+      elsif @image
+        @_image ||= draw_image
+        @_image.draw(@x,@y,@z)
       else
         Gamework::App.window.draw_quad(*@args)
       end
@@ -94,6 +101,10 @@ module Gamework
       @width  = Gamework::App.width
       @height = Gamework::App.height
       make_rectangle
+    end
+
+    def draw_image
+      Gosu::Image.new Gamework::App.window, @image, true, 0, 0, @width, @height
     end
 
     def set_position(x, y)

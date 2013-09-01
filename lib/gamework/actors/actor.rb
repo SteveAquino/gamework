@@ -12,9 +12,10 @@ module Gamework
       @spritesheet = spritesheet
       defaults = {
         x: 0, y: 0,
-        width:  options[:size]||30,
-        height: options[:size]||30,
+        width:  30,
+        height: 30,
         speed:  3,
+        scale:  1,
         direction: :down,
         invisible: false,
         moving:    false,
@@ -25,6 +26,10 @@ module Gamework
       if (pos = options.delete :position)
         options[:x] = pos[0]
         options[:y] = pos[1]
+      end
+      if (size = options.delete :size)
+        options[:width] = size
+        options[:height] = size
       end
       set_options(defaults.merge options)
     end
@@ -51,7 +56,7 @@ module Gamework
     
     def stop
       @moving = false
-      sprite.stop
+      sprite.freeze
     end
 
     def move(direction)
@@ -69,7 +74,8 @@ module Gamework
       when :right
         @x += @speed
       end
-      sprite.move(direction)
+      sprite.set_position(@x,@y)
+      sprite.animate
     end
 
     def hide

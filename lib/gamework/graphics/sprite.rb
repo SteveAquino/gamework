@@ -1,7 +1,10 @@
 module Gamework
   class Sprite
-    # SpriteSheets represent animated graphics that
-    # usually belong to Actor instances.
+    # Sprites represent animated graphics that
+    # usually belong to Actor instances.  They
+    # split animations among 4 directions and
+    # can show a default graphic when not
+    # animating.
 
     attr_reader :x, :y, :width, :height, :direction, :moving, :animating
 
@@ -20,6 +23,11 @@ module Gamework
       make_sprites
     end
 
+    def update
+      update_frame
+      update_sprite
+    end
+
     def draw
       # Use draw_rot to use the center as the reference
       # point, allowing the character to walk to edge of
@@ -28,18 +36,13 @@ module Gamework
       @sprite.draw_rot(@x, @y, z_index, 0, 0.5, 0.5, @scale, @scale)
     end
 
-    def update
-      update_frame
-      update_sprite
-    end
-
     def update_frame
       # Sets the value of @frame depending on
       # the length of tiles for a given direction.
       # If the sprite isn't animating, the first
       # frame is shown
 
-      if @moving || @animated
+      if animating?
         # Draw sprite animations in frames at 60 FPS
         i = Gosu::milliseconds / 60 % @sprites[@direction].size - 1
         @frame = i + 1
@@ -112,25 +115,8 @@ module Gamework
       @direction = direction
     end
 
-    def move(direction)
-      turn direction unless @dir_fixed
-      # return if obstructed?(direction)
-      
-      case direction
-      when :up
-        @y -= @speed
-      when :left
-        @x -= @speed
-      when :down
-        @y += @speed
-      when :right
-        @x += @speed
-      end
-      @moving = true
-    end
-
-    def stop
-      @moving = false
+    def animating?
+      !!@animated
     end
 
     def animate

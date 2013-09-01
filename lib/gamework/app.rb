@@ -71,8 +71,11 @@ module Gamework
 
         # Don't allow the game to start twice
         raise "The game has already started." if showing?
+        # Allow optional before block
         yield if block_given?
-        make_window and show
+        # Create the window and start the game
+        make_window
+        show
       end
 
       def exit

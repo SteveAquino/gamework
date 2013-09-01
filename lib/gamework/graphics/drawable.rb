@@ -39,6 +39,17 @@ module Gamework
       !!@fixed
     end
 
+    def delete
+      # Mark a drawable for deletion from
+      # it's parent scene.
+
+      @delete = true
+    end
+
+    def delete?
+      !!@delete
+    end
+
     def hitbox
       # Returns a nested array of coordinates
       # that corosponds to the boundaries of

@@ -95,11 +95,11 @@ module Gamework
     end
 
     def end_scene
-      @end_scene = true
+      @finished = true
     end
 
     def ended?
-      !!@end_scene
+      !!@finished
     end
 
     def pause
@@ -139,9 +139,12 @@ module Gamework
     end
 
     def update_drawables
-      # Restricts updating to Drawable instances
-      # within the current viewport
+      # Remove objects marked for deletion
+      @fixed.delete_if {|d| d.delete? }
+      @unfixed.delete_if {|d| d.delete? }
 
+      # Update fixed elements and unfixed
+      # objects within viewport
       @fixed.each   {|d| d.update }
       @unfixed.each {|d| d.update if inside_viewport?(d) }
     end
@@ -158,16 +161,14 @@ module Gamework
       # Alias for Gamework::Actor.create
 
       spritesheet = options.delete(:spritesheet)
-      actor = Gamework::Actor.new(spritesheet, options)
+      actor       = Gamework::Actor.new(spritesheet, options)
       @actors[id] = actor
-      if options[:follow]
-        follow_with_camera(actor)
-      end
-      add_drawable(actor) && actor
+      follow_with_camera(actor) if options[:follow]
+      add_drawable(actor)
     end
 
     def create_actors(actors={})
-      # Create many actors from a hash
+      # Create many actors at once from a hash
 
       actors.each {|id, options| create_actor(id, options)}
       return @actors
@@ -183,6 +184,14 @@ module Gamework
       # Alias for Gamework::Shape.new
 
       add_drawable Gamework::Shape.new(type, options)
+    end
+
+    def show_animation(options={})
+      # Alias for Gamework::Animation.new
+
+      spritesheet = options.delete(:spritesheet)
+      animation   = Gamework::Animation.new(spritesheet, options)
+      add_drawable(animation)
     end
 
     def draw_background(options={})

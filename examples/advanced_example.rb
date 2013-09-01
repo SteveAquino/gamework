@@ -12,13 +12,15 @@ class StartScene < Gamework::Scene
   def start_scene
     # Draw Triangles
     show_logo
-
+    # Draw Animation
+    show_link
+    # Draw background image
+    draw_background image: asset_path('background.jpg')
+    # Draw menu
+    show_menu
     # Draw text
     show_text "Example Game", y: 50, height: 50, width: Gamework::App.width, justify: :center
     show_text "Powered by Gamework v#{Gamework::VERSION}", y: 600, height: 15, width: Gamework::App.width, justify: :center
-
-    # Draw menu
-    show_menu
   end
 
   def show_logo
@@ -28,7 +30,11 @@ class StartScene < Gamework::Scene
     show_shape :triangle,  x: x,    y: 250, size: 100, colors: shades
     show_shape :triangle,  x: x+50, y: 350, size: 100, colors: shades
     show_shape :triangle,  x: x-50, y: 350, size: 100, colors: shades
-    draw_background colors: [0xff000033, 0xff000033, 0xff000044, 0xff000033]
+  end
+
+  def show_link
+    x = Gamework::App.center_x
+    show_animation spritesheet: asset_path('spritesheet.png'), x: x, y: 400, cutoff: 11, repeat: true
   end
 
   def show_menu
@@ -37,7 +43,7 @@ class StartScene < Gamework::Scene
     @menu = Gamework::Menu.new x: x, y: 480, width: 300, margin: 10, padding: 10
     @menu.add_option "Start Game"
     @menu.add_option "Quit"
-    @menu.add_background color: 0x77000000
+    @menu.add_background color: 0xaa000022
     @menu.add_cursor
     add_drawable(@menu)
   end
@@ -72,7 +78,8 @@ class CoolScene < Gamework::Scene
   def start_scene
     @score = 0
     @hud   = show_text "Score #{@score}", x: 5, y: 5, size: 20, fixed: true
-    draw_background colors: [0xff000033, 0xff000033, 0xff000044, 0xff000033], fixed: true
+    @stars = []
+    add_star
   end
 
   def before_update
@@ -89,6 +96,7 @@ class CoolScene < Gamework::Scene
   def move_player(dir)
     dir = map_direction_key(dir)
     player.move(dir.intern)
+    gather_stars
   end
 
   def stop_player
@@ -97,6 +105,22 @@ class CoolScene < Gamework::Scene
   
   def player
     @actors[:player]
+  end
+
+  def add_star
+    x = rand(Gamework::App.width-48)
+    y = rand(Gamework::App.height-48)
+    star = show_shape :rectangle, image: asset_path('star.png'), size: 48, position: [x,y]
+    @stars << star
+  end
+
+  def gather_stars
+    @stars.select {|s| player.touch?(s)}.each do |s|
+      @score += 100
+      @stars.delete(s)
+      s.delete
+      add_star
+    end
   end
 
   def show_debug
