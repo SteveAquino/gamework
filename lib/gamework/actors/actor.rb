@@ -113,6 +113,9 @@ module Gamework
     end
 
     def scene_collision(scene)
+      # Checks all actors on a scene to
+      # see if there is a collision
+      
       return false unless scene && scene.actors
       scene.actors.any? {|name, actor| collide?(actor, @direction)}
     end

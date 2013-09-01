@@ -33,6 +33,7 @@ class StartScene < Gamework::Scene
   end
 
   def show_link
+    # Draws an animating Link graphic
     x = Gamework::App.center_x
     show_animation spritesheet: asset_path('spritesheet.png'), x: x, y: 400, cutoff: 11, repeat: true
   end
