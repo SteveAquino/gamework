@@ -55,6 +55,7 @@ module Gamework
     end
     
     def stop
+      return if @animated
       @moving = false
       sprite.freeze
     end

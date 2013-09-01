@@ -79,11 +79,11 @@ class CoolScene < Gamework::Scene
     @score = 0
     @hud   = show_text "Score #{@score}", x: 5, y: 5, size: 20, fixed: true
     @stars = []
-    add_star
   end
 
   def before_update
     @hud.update_text "Score #{@score}"
+    update_stars
   end
 
   def map_direction_key(dir)
@@ -108,18 +108,35 @@ class CoolScene < Gamework::Scene
   end
 
   def add_star
-    x = rand(Gamework::App.width-48)
-    y = rand(Gamework::App.height-48)
-    star = show_shape :rectangle, image: asset_path('star.png'), size: 48, position: [x,y]
+    # Adds a new star in a random
+    # location within the viewport
+
+    x = @camera_x + rand(Gamework::App.width-48-@camera_x)
+    y = @camera_y + rand(Gamework::App.height-48-@camera_y)
+    star = show_shape :square, image: asset_path('star.png'), size: 48, position: [x,y]
     @stars << star
   end
 
+  def update_stars
+    # Adds one star ever 3 seconds,
+    # up to 5 total
+
+    @star_timeout ||= 0
+    @star_timeout += 1
+    if @star_timeout == 60*3
+      @star_timeout = 0
+      add_star if @stars.count < 5
+    end
+  end
+
   def gather_stars
+    # Collect points for stars that are touched
+    # and delete them from the page
+
     @stars.select {|s| player.touch?(s)}.each do |s|
       @score += 100
       @stars.delete(s)
       s.delete
-      add_star
     end
   end
 

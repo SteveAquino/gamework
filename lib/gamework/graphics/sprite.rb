@@ -17,6 +17,7 @@ module Gamework
       @animated    = animated
       @z           = 1
       @scale       = 2
+      @angle       = 0
       @direction   = :down
       @sprites     = {}
 
@@ -33,7 +34,7 @@ module Gamework
       # point, allowing the character to walk to edge of
       # the screen.
       
-      @sprite.draw_rot(@x, @y, z_index, 0, 0.5, 0.5, @scale, @scale)
+      @sprite.draw_rot(@x, @y, z_index, @angle, 0.5, 0.5, @scale, @scale)
     end
 
     def update_frame
@@ -113,6 +114,19 @@ module Gamework
 
     def turn(direction)
       @direction = direction
+    end
+
+    def rotate(degrees)
+      # Increase the angle by
+      # a given degree
+
+      @angle += degrees
+    end
+
+    def set_angle(degrees)
+      # Set the angle explicitly
+
+      @angle = degrees
     end
 
     def animating?
