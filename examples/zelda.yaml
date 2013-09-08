@@ -1,0 +1,36 @@
+song:
+  songfile: 'song.mp3'
+  autoplay: true
+tileset:
+  mapfile: 'simple_map.txt'
+  tile_size: 32
+  spritesheet: 'tileset.png'
+  mapkey:
+    '.': 0
+    ',': 1
+    '#': 2
+    't': 3
+    'x': 4
+link:
+  -
+    x: 400
+    y: 320
+    spritesheet: 'spritesheet.png'
+    follow: true
+    name: player
+  -
+    x: 100
+    y: 100
+    spritesheet: 'spritesheet.png'
+  -
+    x: 100
+    y: 150
+    spritesheet: 'spritesheet.png'
+    animated: true
+  -
+    x: 150
+    y: 100
+    spritesheet: 'spritesheet.png'
+    movement:
+      type: 'random'
+      frequency: 3

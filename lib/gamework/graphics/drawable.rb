@@ -155,14 +155,14 @@ module Gamework
     end
 
     def create_readable_attribute(name, value=nil)
-      # Creates attr_writer with defaul value
+      # Creates attr_writer with default value
 
       self.class.send :attr_reader, name
       instance_variable_set "@#{name}", value
     end
 
     def create_writeable_attribute(name, value=nil)
-      # Creates attr_writer with defaul value
+      # Creates attr_writer with default value
 
       self.class.send :attr_writer, name
       instance_variable_set "@#{name}", value
