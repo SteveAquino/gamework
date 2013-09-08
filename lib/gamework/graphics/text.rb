@@ -15,14 +15,13 @@ module Gamework
         factor_y: 1,
         mode: :default,
         font_name: Gosu.default_font_name,
-        justify: :left,
-        fixed:  false
+        justify: :left
       }
       if (size = options.delete :size)
         options[:width] = size
         options[:height] = size
       end
-      set_options(defaults.merge options)
+      super(defaults.merge options)
       make_font
     end
 

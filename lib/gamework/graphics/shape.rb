@@ -11,9 +11,11 @@ module Gamework
         x: 0, y: 0, z: 1000,
         width:  50,
         height: 50,
+        scale:  1,
+        angle:  0,
         color:  0xffffffff,
-        colors: [],
-        fixed:  false
+        center: false,
+        colors: []
       }
       if (pos = options.delete :position)
         options[:x] = pos[0]
@@ -23,8 +25,8 @@ module Gamework
         options[:width] = size
         options[:height] = size
       end
-      set_options(defaults.merge options)
-      @args   = []
+      super(defaults.merge options)
+      @args = []
       make_colors
       make_shape
     end
@@ -34,7 +36,11 @@ module Gamework
         Gamework::App.window.draw_triangle(*@args)
       elsif @image
         @_image ||= draw_image
-        @_image.draw(@x,@y,@z)
+        if @center
+          @_image.draw_rot(@x, @y, @z, @angle, 0.5, 0.5, @scale, @scale, @color, :add)
+        else
+          @_image.draw(@x,@y,@z)
+        end
       else
         Gamework::App.window.draw_quad(*@args)
       end

@@ -1,14 +1,14 @@
 song:
-  songfile: 'song.png'
+  songfile: 'song.mp3'
   autoplay: true
 tileset:
   tile_size: 30
   spritesheet: 'tileset.png'
   mapfile: 'map.txt'
-actors:
-  player:
-    x: 10
-    y: 10
-    width: 30
-    height: 30
-    spritesheet: 'spritesheet.png'
+drawable:
+  x: 10
+  y: 10
+  name: 'player'
+custom:
+  x: 10
+  y: 10

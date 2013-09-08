@@ -23,8 +23,7 @@ module Gamework
         options[:x] = pos[0]
         options[:y] = pos[1]
       end
-      set_options(defaults.merge options)
-      super()
+      super(defaults.merge options)
     end
 
     def add_background(options={})

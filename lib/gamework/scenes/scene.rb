@@ -1,3 +1,5 @@
+require "active_support/core_ext/string/inflections"
+
 module Gamework
   class Scene
     # A scene can be thought of as the controller part of
@@ -10,18 +12,16 @@ module Gamework
     include Gamework::HasInput
 
     @scene_file = nil
-    attr_reader :tileset, :actors, :paused, :fixed, :unfixed
+    attr_reader :tileset, :fixed, :unfixed, :paused
 
     def initialize
       # The scrolling position is relative to the
       # top left corner of the screen.
       @camera_x = @camera_y = 0
-
       @paused  = false
-      @actors  = {}
+      @built   = false
       @fixed   = []
       @unfixed = []
-      @built   = false
     end
 
     def load_assets
@@ -47,7 +47,6 @@ module Gamework
     def update
       # TODO:
       # Events
-      # Animations
       load_assets unless @built
 
       before_update
@@ -122,7 +121,7 @@ module Gamework
 
     def update_camera(target)
       # Updates the camera to follow a given
-      # Actor on the screen within the
+      # Drawable on the screen within the
       # boundaries of the tileset
 
       half_width  = Gamework::App.center_x
@@ -138,14 +137,28 @@ module Gamework
       ].min
     end
 
+    def drawables
+      # Returns all fixed and unfixed
+      # drawables on the scene
+
+      @fixed | @unfixed
+    end
+
+    def solid_objects
+      # Returns all drawables that
+      # respond to solid? and return
+      # true
+
+      drawables.select {|d| d.respond_to?(:solid?) && d.solid?}.compact
+    end
+
     def update_drawables
       # Remove objects marked for deletion
-      @fixed.delete_if {|d| d.delete? }
-      @unfixed.delete_if {|d| d.delete? }
+      drawables.delete_if   {|d| d.delete? }
 
-      # Update fixed elements and unfixed
-      # objects within viewport
+      # Fixed objects always get updated
       @fixed.each   {|d| d.update }
+      # Only update unfixed objects inside the viewport
       @unfixed.each {|d| d.update if inside_viewport?(d) }
     end
 
@@ -157,21 +170,15 @@ module Gamework
       @tileset = Gamework::Tileset.create(mapfile, *args)
     end
 
-    def create_actor(id, options={})
-      # Alias for Gamework::Actor.create
+    def create_drawable(options={}, type='drawable')
+      # Creates a new drawable instance of a given type
 
-      spritesheet = options.delete(:spritesheet)
-      actor       = Gamework::Actor.new(spritesheet, options)
-      @actors[id] = actor
-      follow_with_camera(actor) if options[:follow]
-      add_drawable(actor)
-    end
-
-    def create_actors(actors={})
-      # Create many actors at once from a hash
-
-      actors.each {|id, options| create_actor(id, options)}
-      return @actors
+      base = type.titleize.gsub('/','::').gsub(' ', '')
+      if Gamework.const_defined?(base) and !Object.const_defined?(base)
+        base.prepend("Gamework::")
+      end
+      class_name = base.constantize
+      add_drawable class_name.new(options)
     end
 
     def show_text(text, options={})
@@ -189,9 +196,7 @@ module Gamework
     def show_animation(options={})
       # Alias for Gamework::Animation.new
 
-      spritesheet = options.delete(:spritesheet)
-      animation   = Gamework::Animation.new(spritesheet, options)
-      add_drawable(animation)
+      add_drawable Gamework::Animation.new(options)
     end
 
     def draw_background(options={})

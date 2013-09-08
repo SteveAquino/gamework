@@ -20,35 +20,38 @@ module Gamework
     def load
       file  = File.open(@filename, 'r')
       @data = YAML.load(file).with_indifferent_access
+      file.close
     end
     
     def build_scene
-      build_song
-      build_actors
-      build_tileset
-    end
-
-    def build_song
-      data = @data[:song]
-      return if data.nil?
-      @scene.load_song asset_path(data[:songfile]), data[:autoplay]
-    end
-
-    def build_actors
-      data = @data[:actors]
-      return if data.nil?
-      data.each do |id, args|
-        args[:spritesheet] = asset_path(args[:spritesheet])
-        @scene.create_actor id.intern, args
+      @data.each do |type, data|
+        if type == "song"
+          build_song data.symbolize_keys
+        elsif type == "tileset"
+          build_tileset data.symbolize_keys
+        elsif data.kind_of?(Array)
+          data.each {|d| build_drawable(type, d.symbolize_keys) }
+        else
+          build_drawable type, data.symbolize_keys
+        end
       end
     end
 
-    def build_tileset
-      data = @data[:tileset]
-      return if data.nil?
-      data[:mapfile] = asset_path(data[:mapfile])
+    def build_song(data)
+      @scene.load_song asset_path(data[:songfile]), data[:autoplay]
+    end
+
+    def build_tileset(data)
+      data[:mapfile]     = asset_path(data[:mapfile])
       data[:spritesheet] = asset_path(data[:spritesheet])
       @scene.create_tileset *data.values
+    end
+
+    def build_drawable(type, data)
+      name = data.delete(:name)
+      data[:spritesheet] = asset_path(data[:spritesheet]) if data[:spritesheet]
+      drawable = @scene.create_drawable(data, type)
+      @scene.instance_variable_set "@#{name}", drawable if name
     end
 
     def asset_path(path)

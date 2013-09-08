@@ -1,3 +1,5 @@
+require "active_support/core_ext/string/inflections"
+
 module Gamework
   module App
     # The Gamework::App module bridges the gap between
@@ -49,7 +51,14 @@ module Gamework
 
       def make_window
         @window ||= Gamework::Window.new(@width, @height, !!@fullscreen)
+        set_default_caption
+      end
+
+      def set_default_caption
+        # Sets a caption on the window
+
         caption ||= @title
+        window.caption = caption
       end
 
       def show
@@ -57,7 +66,7 @@ module Gamework
         # the game window and begins the loop
 
         @showing = true
-        @window.show
+        window.show
       end
 
       def showing?
@@ -111,9 +120,10 @@ module Gamework
       end
 
       def add_scene(scene)
-      	unless scene <= Gamework::Scene
-	      	raise "Must be type of Gamework::Scene or subclass"
-	      end
+        if scene.kind_of? String
+          # Convert strings to classes
+          scene = string_to_scene_class(scene)
+        end
         @@scenes.push(scene.new)
       end
 
@@ -122,7 +132,22 @@ module Gamework
       end
 
       def end_current_scene
-    		current_scene.end_scene
+    		current_scene and current_scene.end_scene
+      end
+
+      def next_scene(scene)
+        # End the current scene and
+        # load another into the array
+
+        end_current_scene
+        add_scene(scene)
+      end
+
+      def string_to_scene_class(string)
+        # Converts a string into a scene class
+
+        base = string.titleize.gsub(' ', '')
+        "#{base}Scene".constantize
       end
 
       # Define class level accessor methods for
@@ -146,6 +171,11 @@ module Gamework
       def fullscreen=(val)
         raise_config_error if showing?
         @fullscreen = val
+      end
+
+      def title=(val)
+        raise_config_error if showing?
+        @title = val
       end
 
       def caption=(val)

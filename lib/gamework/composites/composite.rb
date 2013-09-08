@@ -6,8 +6,9 @@ module Gamework
 
     attr_reader :drawables, :fixed
 
-    def initialize
+    def initialize(options={})
       @drawables = []
+      super(options)
     end
 
     def draw
