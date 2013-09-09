@@ -37,7 +37,7 @@ class StartScene < Gamework::Scene
     @menu.add_option "Quit"
     @menu.add_background color: 0xaa000022
     @menu.add_cursor
-    add_drawable(@menu)
+    add_drawable @menu
   end
 
   def move_cursor(dir)
@@ -77,7 +77,7 @@ class MapScene < Gamework::Scene
 
   def move_player(dir)
     dir = map_direction_key(dir)
-    @player.move(dir.intern)
+    @player.move dir.intern
   end
 
   def stop_player

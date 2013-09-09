@@ -1,31 +1,32 @@
 module Gamework
   class Text < Gamework::Drawable
-    # Represents on screen game text
+    # Represents on screen game text using
+    # Gosu::Font and Drawable methods
+    #
+    # Font height is controlled with the
+    # @height attribute
 
     attr_reader :text
 
     def initialize(text, options={})
       @text    = text
       defaults = {
-        x: 0, y: 0, z: 1000,
-        width:  30,
+        z: 1000,
         height: 30,
-        color:  0xffffffff,
         factor_x: 1,
         factor_y: 1,
+        color:  0xffffffff,
         mode: :default,
-        font_name: Gosu.default_font_name,
-        justify: :left
+        justify: :left,
+        font_name: Gosu.default_font_name
       }
-      if (size = options.delete :size)
-        options[:width] = size
-        options[:height] = size
-      end
       super(defaults.merge options)
       make_font
     end
 
     def make_font
+      # Makes an instance of Gosu::Font
+      
       @font = Gosu::Font.new(Gamework::App.window, @font_name, @height)
     end
 
@@ -35,14 +36,25 @@ module Gamework
     end
 
     def offset_x
+      # Determine the offset for
+      # justified font
+
       case @justify
       when :left
         0
       when :right
-        @width - @font.text_width(@text, @factor_x)
+        @width - font_width
       when :center
-        (@width - @font.text_width(@text, @factor_x))/2
+        (@width - font_width)/2
       end
+    end
+
+    def font_width
+      # Ties into Gosu::Font#text_width
+      # to calculate the visual size
+      # of the rendered font
+
+      @font.text_width(@text, @factor_x)
     end
 
     def update_text(text)
