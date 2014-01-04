@@ -10,17 +10,15 @@ describe Gamework::HasSound do
     end
   end
 
-  after(:each) do
-    Object.send(:remove_const, :Radio)
-  end
+  after(:each) { Object.send(:remove_const, :Radio) }
 
   describe "#load_song" do
+    let(:radio) { Radio.new }
+    let(:path)  { File.expand_path("../../../../media/song.wav", __FILE__) }
+
     it "adds a song to memory" do
-      r = Radio.new
-      file = File.expand_path("../../../../media/song.wav", __FILE__)
-      r.load_song(file)
-      r.current_song.should_not be_nil
-      r.current_song.is_a?(Gosu::Song).should be_true
+      radio.load_song(path)
+      expect(radio.current_song.is_a?(Gosu::Song)).to be_true
     end
 
     it "only holds a single song instance across classes" do
@@ -28,9 +26,8 @@ describe Gamework::HasSound do
         include Gamework::HasSound
       end
 
-      file = File.expand_path("../../../../media/song.wav", __FILE__)
-      song = Radio.new.load_song(file)
-      Mock2.new.current_song.should eq(song)
+      song = radio.load_song(path)
+      expect(Mock2.new.current_song).to eq(song)
     end
   end
 

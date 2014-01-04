@@ -21,6 +21,8 @@ module Gamework
       file  = File.open(@filename, 'r')
       @data = YAML.load(file).with_indifferent_access
       file.close
+      # Return the data loaded
+      @data
     end
     
     def build_scene

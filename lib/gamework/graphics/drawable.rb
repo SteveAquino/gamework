@@ -195,7 +195,7 @@ module Gamework
       include(module_name)
 
       # Extend initialize, update, and draw
-      method = name.split("::").last.downcase
+      method = name.to_s.split("::").last.downcase
       if module_name.instance_methods.include?("initialize_#{method}".intern)
         extend_method("_initialize", "initialize_#{method}")
       end
