@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["aquino.steve@gmail.com"]
   spec.description   = %q{An MVC Game Making Framework}
   spec.summary       = %q{An easy to use MVC game making framework built on Gosu.}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/SteveAquino/gamework"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
@@ -19,6 +19,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency 'gosu', '>= 0.7.47'
+  spec.add_dependency 'i18n'
   spec.add_dependency 'activesupport', '~> 3.0.0'
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"
