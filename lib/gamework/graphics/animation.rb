@@ -3,10 +3,10 @@ module Gamework
 
     def initialize(options={})
       defaults = {
-        z: 1000,
-        repeat:   false,
-        speed:    4,
-        frame:    0
+        z:      1000,
+        repeat: false,
+        speed:  4,
+        frame:  0
       }
       super(defaults.merge options)
     end

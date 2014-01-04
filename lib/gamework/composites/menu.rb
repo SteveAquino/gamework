@@ -1,10 +1,18 @@
+# Represents a group of selectable
+# options.  Contians references to
+# a cursor, menu options, and
+# a container.
+#
+# Usage:
+#   menu = Gamework::Menu.new x: 100, y: 100, width: 300, margin: 10, padding: 10
+#   menu.add_option "New Game"
+#   menu.add_option "Continue"
+#   menu.add_background color: 0xaa000022
+#   menu.add_cursor
+#   add_drawable menu
+
 module Gamework
   class Menu < Gamework::Composite
-    # Represents a group of selectable
-    # options.  Contians references to
-    # a cursor, menu options, and
-    # a container.
-
     attr_reader :cursor_position, :menu_options, :background
 
     def initialize(options={})

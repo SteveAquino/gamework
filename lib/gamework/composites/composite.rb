@@ -1,9 +1,10 @@
+# Represents a nestable tree of elements
+# that can be drawn.  Extend this class
+# when you need mutliple objects to be
+# positioned relative to each other.
+
 module Gamework
   class Composite < Gamework::Drawable
-    # Represents a nestable tree of elements
-    # that can be drawn.  Allows objects to
-    # be positioned relative to each other.
-
     attr_reader :drawables, :fixed
 
     def initialize(options={})
