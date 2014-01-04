@@ -26,7 +26,7 @@ module Gamework
 
       @offset ||= 0
       @cutoff ||= @sprites.size
-      @sprites = @sprites.slice(@offset, @cutoff)
+      @sprites  = @sprites.slice(@offset, @cutoff)
     end
 
     def draw

@@ -24,9 +24,9 @@ class StartScene < Gamework::Scene
     # Draw three triangles centered in the screen
     x = Gamework::App.center_x - 50
     shades = [0xffbbbbbb00, 0xffffff00, 0xffffffbb]
-    show_shape :triangle,  x: x,    y: 250, size: 100, colors: shades
-    show_shape :triangle,  x: x+50, y: 350, size: 100, colors: shades
-    show_shape :triangle,  x: x-50, y: 350, size: 100, colors: shades
+    show_shape :triangle, x: x,    y: 250, size: 100, colors: shades
+    show_shape :triangle, x: x+50, y: 350, size: 100, colors: shades
+    show_shape :triangle, x: x-50, y: 350, size: 100, colors: shades
   end
 
   def show_menu

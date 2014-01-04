@@ -12,16 +12,16 @@ module Gamework
     include Gamework::HasInput
 
     @scene_file = nil
-    attr_reader :tileset, :fixed, :unfixed, :paused
+    attr_reader :tileset, :drawables, :paused
 
     def initialize
       # The scrolling position is relative to the
       # top left corner of the screen.
-      @camera_x = @camera_y = 0
-      @paused  = false
-      @built   = false
-      @fixed   = []
-      @unfixed = []
+      @camera_x  = 0
+      @camera_y  = 0
+      @paused    = false
+      @built     = false
+      @drawables = []
     end
 
     def load_assets
@@ -59,6 +59,8 @@ module Gamework
     end
     
     def draw
+      visible_drawables = @drawables.select {|d| inside_viewport?(d) }
+      
       # TODO:
       # Events
       # Animations
@@ -67,12 +69,12 @@ module Gamework
       before_draw
 
       # Fixed visualizations go here (HUD, ect...)
-      @fixed.each {|d| d.draw }
+      visible_drawables.select(&:fixed?).map(&:draw)
 
       draw_relative do
         # Objects that scroll with the camera go here
 
-        @unfixed.each {|d| d.draw if inside_viewport?(d) }
+        visible_drawables.reject(&:fixed?).map(&:draw)
         @tileset.draw if @tileset
       end
 
@@ -137,29 +139,19 @@ module Gamework
       ].min
     end
 
-    def drawables
-      # Returns all fixed and unfixed
-      # drawables on the scene
-
-      @fixed | @unfixed
-    end
-
     def solid_objects
-      # Returns all drawables that
-      # respond to solid? and return
-      # true
+      # Returns all drawables that respond
+      # to solid? and return true
 
-      drawables.select {|d| d.respond_to?(:solid?) && d.solid?}.compact
+      @drawables.select {|d| d.respond_to?(:solid?) && d.solid?}.compact
     end
 
     def update_drawables
       # Remove objects marked for deletion
-      drawables.delete_if   {|d| d.delete? }
-
+      @drawables.delete_if(&:delete?)
       # Fixed objects always get updated
-      @fixed.each   {|d| d.update }
       # Only update unfixed objects inside the viewport
-      @unfixed.each {|d| d.update if inside_viewport?(d) }
+      @drawables.each {|d| d.update if d.fixed? || inside_viewport?(d) }
     end
 
     # Creation Utility Functions
@@ -212,8 +204,7 @@ module Gamework
       # fixed and unfixed arrays for
       # drawing relative to the map.
 
-      collection = drawable.fixed? ? @fixed : @unfixed
-      collection << drawable
+      @drawables << drawable
       return drawable
     end
 
@@ -224,8 +215,7 @@ module Gamework
     def delete_drawable(drawable)
       # Removes a drawable object
 
-      collection = drawable.fixed? ? @fixed : @unfixed
-      collection.delete drawable
+      @drawables.delete drawable
     end
 
     def build_scene(scene_file)
