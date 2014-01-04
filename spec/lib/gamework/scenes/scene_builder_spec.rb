@@ -20,8 +20,8 @@ describe Gamework::SceneBuilder do
       scene   = Gamework::Scene.new
       builder = Gamework::SceneBuilder.new(scene, 'file')
       scene.stub(:load_song)
-      scene.should_receive(:load_song).with('song.mp3', true)
-      builder.build_song(songfile: 'song.mp3', autoplay: true)
+      scene.should_receive(:load_song).with('song.wav', true)
+      builder.build_song(songfile: 'song.wav', autoplay: true)
     end
   end
 
@@ -64,7 +64,7 @@ describe Gamework::SceneBuilder do
       scene.stub(:load_song)
       scene.stub(:create_tileset)
       scene.stub(:create_drawable).and_return(drawable)
-      scene.should_receive(:load_song).with('song.mp3', true)
+      scene.should_receive(:load_song).with('song.wav', true)
       scene.should_receive(:create_tileset).with(30, 'tileset.png', 'map.txt')
       scene.should_receive(:create_drawable).with({x:10, y:10}, 'drawable')
       scene.should_receive(:create_drawable).with({x:10, y:10}, 'custom')

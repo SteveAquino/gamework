@@ -1,5 +1,5 @@
 song:
-  songfile: 'song.mp3'
+  songfile: 'song.wav'
   autoplay: true
 tileset:
   tile_size: 30

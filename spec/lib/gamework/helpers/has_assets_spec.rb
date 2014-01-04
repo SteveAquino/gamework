@@ -28,8 +28,8 @@ describe Gamework::HasAssets do
         has_assets 'media'
       end
       asset = MockAsset.new
-      path = asset.asset_path("song.mp3", "songs")
-      path.should =~ /media\/songs\/song.mp3\z/
+      path = asset.asset_path("song.wav", "songs")
+      path.should =~ /media\/songs\/song.wav\z/
     end
 
     it "builds a path from multiple arguments" do
@@ -37,8 +37,8 @@ describe Gamework::HasAssets do
         has_assets 'media'
       end
       asset = MockAsset.new
-      path = asset.asset_path("song.mp3", "songs", "test_dir")
-      path.should =~ /media\/test_dir\/songs\/song.mp3\z/
+      path = asset.asset_path("song.wav", "songs", "test_dir")
+      path.should =~ /media\/test_dir\/songs\/song.wav\z/
     end
   end
 

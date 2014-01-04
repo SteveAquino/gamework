@@ -16,7 +16,7 @@ class MyScene < Gamework::Scene
     # Prepare the scene with music, a tileset, and actors
 
     # Load music
-    load_song asset_path("song.mp3")
+    load_song asset_path("song.wav")
 
     # Draw map
     spritesheet = asset_path("tileset.png")
