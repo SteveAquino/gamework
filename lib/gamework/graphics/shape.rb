@@ -13,7 +13,8 @@ module Gamework
         height: 50,
         scale:  1,
         angle:  0,
-        color:  0xffffffff,
+        color:  'white',
+        alpha:  255,
         center: false,
         colors: []
       }
@@ -47,8 +48,8 @@ module Gamework
     end
 
     def get_color(color)
-      return color if color.is_a?(Fixnum)
       return color if color.is_a?(Gosu::Color)
+      return Gosu::Color.argb(color) if color.is_a?(Fixnum)
       Gosu::Color.const_get(color.upcase)
     end
 
@@ -122,6 +123,18 @@ module Gamework
     def resize(width, height)
       @width, @height = width, height
       make_shape
+    end
+
+    def fade(amount)
+      self.alpha -= amount
+    end
+
+    def alpha=(level)
+      @alpha = level
+      @alpha = 0 if @alpha < 0
+      @alpha = 255 if @alpha > 255
+      @color.alpha = level
+      @colors.each {|c| c.alpha = level }
     end
   end
 end

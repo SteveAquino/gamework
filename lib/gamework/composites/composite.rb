@@ -13,11 +13,11 @@ module Gamework
     end
 
     def draw
-      @drawables.each {|d| d.draw}
+      @drawables.map(&:draw)
     end
 
     def update
-      @drawables.each {|d| d.update}
+      @drawables.map(&:update)
     end
 
     def add_drawable(drawable)

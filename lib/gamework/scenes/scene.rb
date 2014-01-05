@@ -24,12 +24,16 @@ module Gamework
       @drawables = []
     end
 
-    def load_assets
-      # Delay building scene until it's
-      # the current scene.
-
+    # Delay building scene until it's
+    # the current scene.
+    def _start_scene
+      # Load YAML file
       build_scene(scene_file) if scene_file
+      # Call hook method
       start_scene
+      # Perform opening transition
+      do_transition(transition_options[:start]) if transition_options.try(:[], :start)
+      # Mark self as built
       @built = true
     end
 
@@ -45,13 +49,12 @@ module Gamework
     def after_draw; end
 
     def update
-      # TODO:
-      # Events
-      load_assets unless @built
+      # Lazy load scene
+      _start_scene unless @built
 
       before_update
 
-      update_input unless paused?
+      update_input
       update_camera(@camera_target) if @camera_target
       update_drawables
 
@@ -59,13 +62,10 @@ module Gamework
     end
     
     def draw
+      # Optimize visual calculations by only
+      # drawing options inside the viewport
       visible_drawables = @drawables.select {|d| inside_viewport?(d) }
       
-      # TODO:
-      # Events
-      # Animations
-      # Dialogue windows
-
       before_draw
 
       # Fixed visualizations go here (HUD, ect...)
@@ -81,10 +81,9 @@ module Gamework
       after_draw
     end
 
+    # Ties into Gosu::Window#translate to 
+    # pan graphics with camera movement
     def draw_relative(camera_x=-@camera_x, camera_y=-@camera_y, &block)
-      # Ties into Gosu::Window#translate to 
-      # pan graphics with camera movement
-
       Gamework::App.window.translate(camera_x, camera_y) { yield }
     end
 
@@ -96,11 +95,21 @@ module Gamework
     end
 
     def end_scene
+      do_transition(transition_options[:end]) if transition_options.try(:[], :end)
       @finished = true
     end
 
+    # Returns true if the scene is marked
+    # as ended and there are no current
+    # transitions
     def ended?
-      !!@finished
+      !!@finished && !transition?
+    end
+
+    # Returns true if there is a transition
+    # that still hasn't finished yet
+    def transition?
+      not @transition.nil? || @transition.finished?
     end
 
     def pause
@@ -111,9 +120,8 @@ module Gamework
       !!@paused
     end
 
+    # Utility function to abort the game
     def quit
-      # Utility function to abort the game
-      
       Gamework::App.quit
     end
 
@@ -227,19 +235,44 @@ module Gamework
       return self
     end
 
-    def self.build_scene(scene_file)
+    def do_transition(options)
+      type = options.delete(:type)
+      @transition = add_drawable Gamework::Transition.new(type, options)
+    end
+
+    class << self
+
       # Sets a class instance variable that
       # tells new instances to build from
       # this file after initializing
+      def build_scene(scene_file)
 
-      filename = File.expand_path(scene_file)
-      @scene_file = filename
+        filename = File.expand_path(scene_file)
+        @scene_file = filename
+      end
+
+      # Sets a class instance variable that
+      # tells new instances to how to
+      # transition into and out of a scene
+      def transition(options={})
+        _all   = options.delete(:nil)
+        _start = _all || options.delete(:start)
+        _end   = _all || options.delete(:end)
+
+        @transition_options ||= { }
+        @transition_options[:start] = {type: _start}.merge(options) if _start
+        @transition_options[:end]   = {type: _end}.merge(options) if _end
+      end
     end
 
     private
 
     def scene_file
       self.class.instance_variable_get "@scene_file"
+    end
+
+    def transition_options
+      self.class.instance_variable_get "@transition_options"
     end
   end
 end
