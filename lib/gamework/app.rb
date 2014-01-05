@@ -22,7 +22,7 @@ module Gamework
 
         # Remove the current Scene if it's marked for deletion
         @@scenes.shift if current_scene and current_scene.ended?
-        # Update the current scene exists, otherwise exot
+        # Update the current scene if it exists, otherwise exit
       	current_scene ? current_scene.update : exit
       end
 

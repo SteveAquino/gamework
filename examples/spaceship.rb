@@ -1,11 +1,14 @@
 require 'rubygems'
 require 'gamework'
+require 'pry'
 
 class TitleScene < Gamework::Scene
   has_assets "spec/media"
   on_button_down 'escape', 'kb', :quit
   on_button_down 'return', 'kb', :select_option
   on_button_up ['up', 'down'], 'kb', :move_cursor
+
+  transition start: 'fade_in', end: 'fade_out', duration: 1.5
 
   def start_scene
     show_logo
@@ -55,6 +58,12 @@ class TitleScene < Gamework::Scene
       quit
     end
   end
+
+  # Block user input when the game is paused
+  # or during scene transitions
+  def disallow_input?
+    paused? || transition?
+  end
 end
 
 class SpaceScene < Gamework::Scene
@@ -63,6 +72,7 @@ class SpaceScene < Gamework::Scene
   on_button_down ['left', 'right', 'a', 'd'], 'kb', :turn_player
   on_button_down ['up', 'w'], 'kb', :accelerate_player
   on_button_down ['down', 's'], 'kb', :decelerate_player
+  transition start: 'fade_in', end: 'fade_out', duration: 2
 
   def start_scene
     @score  = 0
@@ -140,6 +150,7 @@ class SpaceScene < Gamework::Scene
       play_sound :star_collect, asset_path('menu_select.wav')
     end
   end
+
 end
 
 class Spaceship < Gamework::Drawable

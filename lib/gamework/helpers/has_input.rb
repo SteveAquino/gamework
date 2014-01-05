@@ -17,30 +17,37 @@ module Gamework
       base.extend ClassMethods
     end
 
+    # This method is called when a button is
+    # pressed, passing the Gous::Button id
     def button_down(id)
+      return if disallow_input?
       callback = self.class.button_down_mapping[id]
       callback and call_block_or_array(callback)
     end
 
+    # This method is called when a button is
+    # released, passing the Gous::Button id
     def button_up(id)
+      return if disallow_input?
       callback = self.class.button_up_mapping[id]
       callback and call_block_or_array(callback)
     end
 
+    # Returns true if a button is being pressed
+    # at the current moment
     def button_down?(id)
+      return if disallow_input?
       Gamework::App.window.button_down?(id)
     end
 
+    # Convenience method for button mapping
     def gosu_button_id(id, source)
-      # Convenience method for button mapping
-
       self.class.gosu_button_id(id, source)
     end
     
+    # Takes a block or an array of arguments
+    # for the send call
     def call_block_or_array(block_or_array)
-      # Takes a block or an array of arguments
-      # for the send call
-
       if block_or_array.kind_of?(Array)
         # Try sending the button id with
         # the callback.  If the call fails,
@@ -57,14 +64,20 @@ module Gamework
       end
     end
 
+    # Checks to see if a button is being pressed
+    # at a given moment.  Use this method on an
+    # including classes's update method.
     def update_input
-      # Checks to see if a button is being pressed
-      # at a given moment.  Use this method on an
-      # including classes's update method.
-
+      return if disallow_input?
       self.class.button_down_mapping.each do |id, callback|
         call_block_or_array(callback) if button_down?(id)
       end
+    end
+
+    # Hook method that can be defined on
+    # including classes when input is
+    # to be blocked, eg: pausing the game
+    def disallow_input?
     end
 
     module ClassMethods
@@ -103,9 +116,8 @@ module Gamework
         @button_up_mapping ||= {}
       end
 
+      # Maps a string to a Gosu::Button constant
       def gosu_button_id(id, source)
-        # Maps a string to a Gosu::Button constant
-
         constant_name = "#{source.capitalize}#{id.capitalize}"
         Gosu::Button.const_get(constant_name)
       end

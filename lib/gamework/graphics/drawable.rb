@@ -1,24 +1,35 @@
+# Represents objects within a scene
+# that need to respond to update and
+# draw on each frame.
+
+# Drawable objects can be subclassed
+# and intialized with default attributes
+# easily by passing a hash of options,
+# eg: MyClass.new x: 10, y: 10, speed: 3
+#
+# Drawables can easily be added to a scene's
+# render loop using Scene#add_drawable.
+# This automatically registers a drawable
+# object to recieve regular updates and
+# draws from the parent scene.  A drawable
+# can be removed from the scen by calling
+# Drawable#delete, which tells the scene
+# to remove the object from the collection
+# on the next update.
+
+# Drawable objects can be extended with
+# more advanced functionality using
+# traits.  Traits dynamically include
+# modules located in your /traits
+# directory with a class name pattern
+# of TraitNameTrait, eg: module FunTrait.
+# syntax: trait 'trait_name'
+# Include a trait with the following
+
 require "active_support/core_ext/string/inflections"
 
 module Gamework
   class Drawable
-    # Represents objects within a scene
-    # that need to respond to update and
-    # draw on each frame.
-
-    # Drawable objects can be subclassed
-    # and intialized with default attributes
-    # easily by passing a hash of options,
-    # eg: MyClass.new x: 10, y: 10, speed: 3
-
-    # Drawable objects can be extended with
-    # more advanced functionality using
-    # traits.  Traits dynamically include
-    # modules located in your /traits
-    # directory with a class name pattern
-    # of TraitNameTrait, eg: module FunTrait.
-    # Include a trait with the following
-    # syntax: trait 'trait_name'
 
     def initialize(options={})
       # Set starting attributes with defaults,
