@@ -9,44 +9,42 @@ module Gamework
     # be prepared before the game loads or during
     # exectution of another Scene.
 
+    # This singleton contains the only reference
+    # to a Gosu::Window instance, required for mainy
+    # of the library's functions.
+
     @@scenes = []
 
     class << self
       # Class Methods (accessible via Gamework::App#method)
 
       @showing = false
-      attr_accessor :width, :height, :fullscreen, :debug, :title, :caption
+      attr_reader :window, :logger
+      attr_accessor :width, :height, :fullscreen, :debug, :title, :caption, :log_file
 
+      # Delegate update to the current scene,
+      # called once per frame
       def update
-        # Delegate update to the current scene
-
         # Remove the current Scene if it's marked for deletion
         @@scenes.shift if current_scene and current_scene.ended?
         # Update the current scene if it exists, otherwise exit
       	current_scene ? current_scene.update : exit
       end
 
+      # Delegate draw to the current scene,
+      # called once per frame
       def draw
-        # Delegate draw to the current scene
 				current_scene and current_scene.draw
       end
 
+      # Delegate input to the current scene
       def button_down(id)
-        # Delegate input to the current scene
         current_scene and current_scene.button_down(id)
       end
 
+      # Delegate input to the current scene
       def button_up(id)
-        # Delegate input to the current scene
         current_scene and current_scene.button_up(id)
-      end
-
-      def window
-        # Returns the only instance of Gosu::Window so
-        # it is available to the rest of the app by
-        # calling Gamework::App.window
-
-        @window
       end
 
       def make_window
@@ -54,17 +52,18 @@ module Gamework
         set_default_caption
       end
 
-      def set_default_caption
-        # Sets a caption on the window
-
-        caption ||= @title
-        window.caption = caption
+      def make_logger(log_file=nil)
+        @logger ||= Gamework::Logger.new(log_file)
       end
 
-      def show
-        # Calls Gosu::Window#show which opens
-        # the game window and begins the loop
+      # Sets a caption on the window
+      def set_default_caption
+        self.caption ||= @title
+      end
 
+      # Calls Gosu::Window#show which opens
+      # the game window and begins the loop
+      def show
         @showing = true
         window.show
       end
@@ -73,17 +72,19 @@ module Gamework
         @showing
       end
 
+      # Creates a new window and starts
+      # the main game loop with an optional
+      # block called before.
       def start(&block)
-      	# Creates a new window and starts
-        # the main game loop with an optional
-        # block called before.
-
         # Don't allow the game to start twice
         raise "The game has already started." if showing?
         # Allow optional before block
         yield if block_given?
-        # Create the window and start the game
+        # Create the window
         make_window
+        # Create a logger
+        make_logger(@log_file)
+        # Start the render loop
         show
       end
 
@@ -92,24 +93,22 @@ module Gamework
         @window.close
       end
 
+      # Empties the scene collection to
+      # allow the game and current scene
+      # to close on the next update
       def quit
-        # Empties the scene collection to
-        # allow the game and current scene
-        # to close on the next update
-
         scene = current_scene
         scene.end_scene
         @@scenes = [scene]
       end
 
+      # Allow block style configuration settings, ie:
+      #
+      # config.do |c|
+      #   c.width  = 800
+      #   c.height = 640
+      # end
       def config(&block)
-        # Allow block style configuration settings, ie:
-        #
-        # config.do |c|
-        #   c.width  = 800
-        #   c.height = 640
-        # end
-
         # Raise error if the window is already drawn
         raise_config_error if showing?
         yield(Gamework::App)
@@ -176,6 +175,11 @@ module Gamework
       def title=(val)
         raise_config_error if showing?
         @title = val
+      end
+
+      def log_file=(val)
+        raise_config_error if showing?
+        @log_file = val
       end
 
       def caption=(val)

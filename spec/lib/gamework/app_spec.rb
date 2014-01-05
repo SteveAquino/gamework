@@ -5,7 +5,6 @@ class TestScene < Gamework::Scene; end;
 describe Gamework::App do
 
   describe "event delegation" do
-
     %w(update draw).each do |event|
       it "delegates .#{event} to the current scene" do
         scene = Gamework::Scene.new
@@ -23,10 +22,7 @@ describe Gamework::App do
         Gamework::App.send(event, 1)
       end
     end
-
   end
-
-  # Game Flow
 
   describe ".config" do
     it "should allow block style configuration" do
@@ -78,10 +74,17 @@ describe Gamework::App do
     end
   end
 
+  describe ".make_logger" do
+    it "creates a new instance of Gamework::Logger" do
+      logger = Gamework::App.make_logger('my_logfile.txt')
+      expect(logger.kind_of? Gamework::Logger).to be_true
+    end
+  end
+
   describe ".set_default_caption" do
     it "sets a caption on the window" do
       window = double("Gamework::Window")
-      window.should_receive(:caption=).with('Test Game')
+      expect(window).to receive(:caption=).with('Test Game')
       Gamework::App.stub(:window).and_return(window)
       Gamework::App.stub("showing?").and_return(false)
       Gamework::App.title = 'Test Game'
@@ -99,10 +102,9 @@ describe Gamework::App do
   describe ".start" do
     it "creates a window object and calls show" do
       Gamework::App.stub("showing?").and_return(false)
-      Gamework::App.stub(:make_window)
-      Gamework::App.stub(:show)
-      Gamework::App.should_receive(:make_window).and_return(true)
-      Gamework::App.should_receive(:show)
+      expect(Gamework::App).to receive(:make_window)
+      expect(Gamework::App).to receive(:make_logger)
+      expect(Gamework::App).to receive(:show)
       Gamework::App.start
     end
 
@@ -114,11 +116,12 @@ describe Gamework::App do
     it "takes a block argument that is called before window is shown" do
       Gamework::App.stub("showing?").and_return(false)
       Gamework::App.stub(:make_window)
+      Gamework::App.stub(:make_logger)
       Gamework::App.stub(:show)
       
       @called = false
       Gamework::App.start { @called = true }
-      @called.should be_true
+      expect(@called).to be_true
     end
   end
 
@@ -164,8 +167,6 @@ describe Gamework::App do
       Gamework::App.exit
     end
   end
-
-  # Scene Management
 
   describe ".string_to_scene_class" do
     it "transforms a string into a class" do
@@ -220,8 +221,6 @@ describe Gamework::App do
       Gamework::App.class_variable_get("@@scenes").size.should eq(1)
     end
   end
-
-  # Window Information
 
   describe ".center_x" do
     it "returns the horizontal center point of the window" do
