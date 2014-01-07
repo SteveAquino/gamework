@@ -164,15 +164,14 @@ module Gamework
 
     # Creation Utility Functions
 
+    # Alias for Gamework::Tileset.create
     def create_tileset(mapfile, *args)
-      # Alias for Gamework::Tileset.create
-
       @tileset = Gamework::Tileset.create(mapfile, *args)
     end
 
+    # Creates a new drawable instance of a given type
+    # and adds it to the collection
     def create_drawable(options={}, type='drawable')
-      # Creates a new drawable instance of a given type
-
       base = type.titleize.gsub('/','::').gsub(' ', '')
       if Gamework.const_defined?(base) and !Object.const_defined?(base)
         base.prepend("Gamework::")
@@ -181,37 +180,30 @@ module Gamework
       add_drawable class_name.new(options)
     end
 
+    # Adds a new Gamework::Text to the collection
     def show_text(text, options={})
-      # Alias for Gamework::Text.new
-      
       add_drawable Gamework::Text.new(text, options)
     end
 
+    # Adds a new Gamework::Shape to the collection
     def show_shape(type, options={})
-      # Alias for Gamework::Shape.new
-
       add_drawable Gamework::Shape.new(type, options)
     end
 
+    # Adds a new Gamework::Animation to the collection
     def show_animation(options={})
-      # Alias for Gamework::Animation.new
-
       add_drawable Gamework::Animation.new(options)
     end
 
+    # Draws a :background type shape
+    # below other drawables
     def draw_background(options={})
-      # Draws a :background type shape
-      # below other drawables
-
       settings = {z: -1, fixed: true}.merge(options)
       show_shape(:background, settings)
     end
 
+    # Adds a drawable to the collection
     def add_drawable(drawable)
-      # Separates drawable objects into
-      # fixed and unfixed arrays for
-      # drawing relative to the map.
-
       @drawables << drawable
       return drawable
     end
@@ -220,21 +212,20 @@ module Gamework
       add_drawable drawable
     end
 
+    # Removes a drawable object
     def delete_drawable(drawable)
-      # Removes a drawable object
-
       @drawables.delete drawable
     end
 
+    # Create the scene from a given yaml file
     def build_scene(scene_file)
-      # Create the scene from a given yaml file
-
       builder = Gamework::SceneBuilder.new(self, scene_file)
       builder.load
       builder.build_scene
       return self
     end
 
+    # Create new transition instance attached to the scene
     def do_transition(options)
       type = options.delete(:type)
       @transition = add_drawable Gamework::Transition.new(type, options)

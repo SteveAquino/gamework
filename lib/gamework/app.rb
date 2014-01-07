@@ -76,19 +76,24 @@ module Gamework
       # the main game loop with an optional
       # block called before.
       def start(&block)
+        puts 'Starting the game'
+
         # Don't allow the game to start twice
         raise "The game has already started." if showing?
         # Allow optional before block
         yield if block_given?
-        # Create the window
-        make_window
         # Create a logger
         make_logger(@log_file)
-        # Start the render loop
+
+        puts 'Opening a native window'
+        make_window
+
+        puts 'Starting render loop'
         show
       end
 
       def exit
+        puts 'Exiting game'
         @showing = false
         @window.close
       end
