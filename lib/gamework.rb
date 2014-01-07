@@ -21,5 +21,4 @@ require "gamework/traits/physics_trait"
 require "gamework/traits/wrap_trait"
 
 module Gamework
-  # Your code goes here...
 end

@@ -72,7 +72,7 @@ class SpaceScene < Gamework::Scene
   on_button_down ['left', 'right', 'a', 'd'], 'kb', :turn_player
   on_button_down ['up', 'w'], 'kb', :accelerate_player
   on_button_down ['down', 's'], 'kb', :decelerate_player
-  transition start: 'fade_in', end: 'fade_out', duration: 2
+  transition start: 'fade_in', end: 'fade_out', duration: 1.5
 
   def start_scene
     @score  = 0

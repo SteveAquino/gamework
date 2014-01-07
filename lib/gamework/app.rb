@@ -16,7 +16,6 @@ module Gamework
     @@scenes = []
 
     class << self
-      # Class Methods (accessible via Gamework::App#method)
 
       @showing = false
       attr_reader :window, :logger
@@ -76,24 +75,25 @@ module Gamework
       # the main game loop with an optional
       # block called before.
       def start(&block)
-        puts 'Starting the game'
+        Gamework::ENV ||= 'development'
+        # Make logger and start game
+        make_logger(@log_file)
+        @logger.info 'Starting the game'
 
         # Don't allow the game to start twice
         raise "The game has already started." if showing?
         # Allow optional before block
         yield if block_given?
-        # Create a logger
-        make_logger(@log_file)
 
-        puts 'Opening a native window'
+        @logger.info 'Opening a native window'
         make_window
 
-        puts 'Starting render loop'
+        @logger.info 'Starting render loop'
         show
       end
 
       def exit
-        puts 'Exiting game'
+        @logger.info 'Exiting game'
         @showing = false
         @window.close
       end

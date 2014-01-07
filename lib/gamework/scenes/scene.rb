@@ -237,7 +237,6 @@ module Gamework
       # tells new instances to build from
       # this file after initializing
       def build_scene(scene_file)
-
         filename = File.expand_path(scene_file)
         @scene_file = filename
       end

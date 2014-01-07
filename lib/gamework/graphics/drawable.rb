@@ -31,10 +31,10 @@ require "active_support/core_ext/string/inflections"
 module Gamework
   class Drawable
 
+    # Set starting attributes with defaults,
+    # load any _initialize hooks
     def initialize(options={})
-      # Set starting attributes with defaults,
-      # load any _initialize hooks
-
+      announce(options) if Gamework::App.showing?
       create_attributes default_options.merge(options)
       _initialize
     end
@@ -79,20 +79,18 @@ module Gamework
       @fixed = false
     end
 
+    # If this method returns true, the
+    # object will be drawn fixed on the
+    # screen and move with the camera.
+    # The default is to scroll with the
+    # map as the camera moves.
     def fixed?
-      # If this method returns true, the
-      # object will be drawn fixed on the
-      # screen and move with the camera.
-      # The default is to scroll with the
-      # map as the camera moves.
-
       !!@fixed
     end
 
+    # Mark a drawable for deletion from
+    # it's parent scene.
     def delete
-      # Mark a drawable for deletion from
-      # it's parent scene.
-
       @delete = true
     end
 
@@ -153,9 +151,8 @@ module Gamework
       }
     end
 
+    # Creates attributes from a hash
     def create_attributes(options, writer=false)
-      # Creates attributes from a hash.
-
       options.each do |key, value|
         if writer
           create_writable_attribute(key,value)
@@ -165,25 +162,27 @@ module Gamework
       end
     end
 
+    # Creates attr_writer with default value
     def create_readable_attribute(name, value=nil)
-      # Creates attr_writer with default value
-
       self.class.send :attr_reader, name
       instance_variable_set "@#{name}", value
     end
 
+    # Creates attr_writer with default value
     def create_writeable_attribute(name, value=nil)
-      # Creates attr_writer with default value
-
       self.class.send :attr_writer, name
       instance_variable_set "@#{name}", value
     end
 
-    def self.extend_method(original, added)
-      # Aliases a method and adds a new
-      # method call to the end of the
-      # original method
+    # Logs the class and given options
+    def announce(options={})
+      Gamework::App.logger.info "#{self.class}".yellow.bold, "{" + options.map {|k,v| "#{k}: #{v}"}.join(", ") + "}"
+    end
 
+    # Aliases a method and adds a new
+    # method call to the end of the
+    # original method
+    def self.extend_method(original, added)
       meta_method = "_#{original}_with_#{added}"
       code = %Q{
         alias_method :#{meta_method}, :#{original}
@@ -196,6 +195,7 @@ module Gamework
       class_eval(code)
     end
 
+    # Dynamically load a trait module
     def self.trait(name)
       # Titleize turns :: into /, so we'll
       # convert back and to allow namespaced

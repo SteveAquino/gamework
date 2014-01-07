@@ -1,10 +1,10 @@
 require_relative '../../../spec_helper'
  
 describe Gamework::Drawable do
+  let(:drawable) { Gamework::Drawable.new }
 
   describe "#create_attributes" do
     it "creates readable attributes from a hash of options" do
-      drawable = Gamework::Drawable.new
       drawable.send :create_attributes, {opt: 'hello', tion: 'world'}
       drawable.opt.should eq('hello')
       drawable.tion.should eq('world')
@@ -17,7 +17,6 @@ describe Gamework::Drawable do
     end
 
     it "sets default options" do
-      drawable = Gamework::Drawable.new
       drawable.x.should eq(0)
       drawable.y.should eq(0)
       drawable.z.should eq(0)
@@ -31,6 +30,15 @@ describe Gamework::Drawable do
     it "overrides default options" do
       drawable = Gamework::Drawable.new x: 100
       drawable.x.should eq(100)
+    end
+  end
+
+  describe '#announce' do
+    it 'logs a message with given options' do
+      logger = double('logger', info: '')
+      Gamework::App.stub(:logger)   { logger }
+      expect(logger).to receive(:info).with("Gamework::Drawable.new".yellow.bold, "{x: 100, y: 100}")
+      drawable.send :announce, x: 100, y: 100
     end
   end
 
