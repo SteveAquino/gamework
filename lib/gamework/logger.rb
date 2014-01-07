@@ -2,12 +2,6 @@ require 'colorize'
 
 module Gamework
   class Logger
-    COLORS = {
-      red: 31,
-      green: 32,
-      yellow: 33,
-      blue: 34
-    }
 
     def initialize(log_file=nil)
       @log_file = log_file
