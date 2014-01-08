@@ -99,7 +99,7 @@ describe Gamework::Drawable do
   describe ".trait" do
     it "dynamically includes a Trait module" do
       module SweetnessTrait
-        def sweetness
+        def say_something_sweet
           'sweet'
         end
       end
@@ -107,7 +107,7 @@ describe Gamework::Drawable do
         trait :sweetness
       end
       guy = SweetGuy.new
-      guy.sweetness.should eq('sweet')
+      guy.say_something_sweet.should eq('sweet')
     end
 
     it "includes namespaced modules" do
