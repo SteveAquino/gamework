@@ -37,7 +37,7 @@ describe Gamework::Drawable do
     it 'logs a message with given options' do
       logger = double('logger', info: '')
       Gamework::App.stub(:logger)   { logger }
-      expect(logger).to receive(:info).with("Gamework::Drawable.new".yellow.bold, "{x: 100, y: 100}")
+      expect(logger).to receive(:info).with("Gamework::Drawable".yellow.bold, "{x: 100, y: 100}")
       drawable.send :announce, x: 100, y: 100
     end
   end

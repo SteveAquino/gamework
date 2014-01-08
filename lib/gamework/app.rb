@@ -10,7 +10,7 @@ module Gamework
     # exectution of another Scene.
 
     # This singleton contains the only reference
-    # to a Gosu::Window instance, required for mainy
+    # to a Gosu::Window instance, required for many
     # of the library's functions.
 
     @@scenes = []
@@ -74,14 +74,15 @@ module Gamework
       # Creates a new window and starts
       # the main game loop with an optional
       # block called before.
-      def start(&block)
+      def start
+        # Don't allow the game to start twice
+        raise "The game has already started." if showing?
+
         Gamework::ENV ||= 'development'
         # Make logger and start game
         make_logger(@log_file)
         @logger.info 'Starting the game'
 
-        # Don't allow the game to start twice
-        raise "The game has already started." if showing?
         # Allow optional before block
         yield if block_given?
 
