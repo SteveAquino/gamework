@@ -54,6 +54,15 @@ module Gamework
       def make_logger(log_file=nil)
         @logger ||= Gamework::Logger.new(log_file)
       end
+      
+      # Use a StringInquirer instance for pretty equality
+      # testing, eg Gamework::App.env.test?
+      def env
+        # Look for a GAMEWORK_ENV constant
+        _env = Object.const_defined?('GAMEWORK_ENV') && GAMEWORK_ENV
+        # otherwise default to 'development'
+        @env ||= ActiveSupport::StringInquirer.new(_env || 'development')
+      end
 
       # Sets a caption on the window
       def set_default_caption

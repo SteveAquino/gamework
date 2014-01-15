@@ -58,7 +58,7 @@ module Gamework
 
     # Suppress console output during tests
     def puts(string)
-      super(string) unless Gamework.const_defined?('ENV') && Gamework::ENV == 'test'
+      super(string) unless Gamework::App.env.test?
     end
 
     def write_to_log(message, log_file)
