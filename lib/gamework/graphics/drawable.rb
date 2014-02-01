@@ -205,13 +205,13 @@ module Gamework
       module_name = "#{base}Trait".constantize
       include(module_name)
 
-      # Extend initialize, update, and draw
+      # Extend _initialize, update, and draw
       method_suffix = name.to_s.split("::").last.downcase
       %w(_initialize update draw).each do |base_method|
 
         # Appends the module name to the base_method,
         # eg: initialize_movement
-        joined_method = "#{base_method}_#{method_suffix}".gsub(/\A_/, '')
+        joined_method = "#{base_method}_#{method_suffix}".sub(/\A_/, '')
         if module_name.instance_methods.include?(joined_method.intern)
           # Call the joined_method after the base_method,
           # eg: initialize_movement will be called after

@@ -119,10 +119,6 @@ describe Gamework::Drawable do
       Ball.new.respond_to?(:accelerate).should be_true
       Object.send(:remove_const, :Ball)
     end
-
-    it "extends #_initialize, #update, and #draw" do
-
-    end
   end
 
 end
