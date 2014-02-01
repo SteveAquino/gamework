@@ -116,9 +116,12 @@ describe Gamework::Drawable do
       class Ball < Gamework::Drawable
         trait 'gamework::physics'
       end
-      ball = Ball.new
-      ball.respond_to?(:accelerate).should be_true
+      Ball.new.respond_to?(:accelerate).should be_true
       Object.send(:remove_const, :Ball)
+    end
+
+    it "extends #_initialize, #update, and #draw" do
+
     end
   end
 

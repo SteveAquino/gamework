@@ -31,6 +31,6 @@ link:
     x: 150
     y: 100
     spritesheet: 'spritesheet.png'
-    movement:
+    movement_options:
       type: 'random'
       frequency: 3

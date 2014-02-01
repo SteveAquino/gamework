@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'gamework'
+require 'pry'
 
 # Opening Title Scene
 class StartScene < Gamework::Scene

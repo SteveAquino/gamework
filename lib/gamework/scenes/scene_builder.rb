@@ -65,9 +65,9 @@ module Gamework
       end
     end
 
-    def export
-      # json     = TextImage.export_json
-      # filename = File.expand_path('text_images.yaml', 'db/redesign')
+    def export(scene)
+      # json     = scene.as_json
+      # filename = File.expand_path('scene.yaml', 'db/scenes')
       # file     = File.open(filename, 'w')
       # YAML.dump(json, file)
     end

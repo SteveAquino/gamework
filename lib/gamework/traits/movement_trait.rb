@@ -3,6 +3,7 @@
 
 module Gamework
   module MovementTrait
+    attr_reader :movement_options
 
     def initialize_movement
       @speed     ||= 3
@@ -10,11 +11,11 @@ module Gamework
       @animating ||= false
       @direction ||= :down
       @solid     ||= true
-      @movement  ||= {}
+      @movement_options ||= {}
     end
 
     def update_movement
-      update_auto_movement if @movement[:type]
+      update_auto_movement if @movement_options[:type]
     end
 
     def turn(direction)
@@ -102,10 +103,10 @@ module Gamework
     # to update in parallel to other
     # processes
     def update_auto_movement
-      return if @movement[:moving]
-      distance = @movement[:distance] || @width
-      delay    = @movement[:delay]    || 1
-      if @movement[:type].to_s == 'random'
+      return if @movement_options[:moving]
+      distance = @movement_options[:distance] || @width
+      delay    = @movement_options[:delay]    || 1
+      if @movement_options[:type].to_s == 'random'
         Thread.new { random_movement(distance, delay) }
       end
     end
@@ -113,7 +114,7 @@ module Gamework
     # Move between 0 to 2 steps in a
     # random direction with a given delay
     def random_movement(distance, delay)
-      @movement[:moving] = true
+      @movement_options[:moving] = true
       # Random direction
       dir = %w(up down left right)[rand(4)]
       # Move between 0 and 2 steps
@@ -123,7 +124,7 @@ module Gamework
         step(distance)
       end
       sleep delay
-      @movement[:moving] = false
+      @movement_options[:moving] = false
     end
     
     # def move_towards(target)

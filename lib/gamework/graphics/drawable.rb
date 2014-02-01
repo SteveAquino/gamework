@@ -207,11 +207,11 @@ module Gamework
 
       # Extend initialize, update, and draw
       method_suffix = name.to_s.split("::").last.downcase
-      %w(initialize update draw).each do |base_method|
+      %w(_initialize update draw).each do |base_method|
 
         # Appends the module name to the base_method,
         # eg: initialize_movement
-        joined_method = "#{base_method}_#{method_suffix}"
+        joined_method = "#{base_method}_#{method_suffix}".gsub(/\A_/, '')
         if module_name.instance_methods.include?(joined_method.intern)
           # Call the joined_method after the base_method,
           # eg: initialize_movement will be called after
