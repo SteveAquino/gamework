@@ -11,30 +11,30 @@ class TitleScene < Gamework::Scene
   transition start: 'fade_in', end: 'fade_out', duration: 1.5
 
   def start_scene
-    show_logo
     show_spaceship
+    show_logo
     show_menu
     show_text Gamework::App.title, y: 50, height: 50, width: Gamework::App.width, justify: :center
     show_text "Powered by Gamework v#{Gamework::VERSION}", y: 600, height: 15, width: Gamework::App.width, justify: :center
     draw_background image: asset_path('background.jpg')
   end
 
+  # Draw shapes on the screen
   def show_logo
-    # Draw shapes on the screen
     x = Gamework::App.center_x - 50
     shades = [0xffbbbbbb00, 0xffffff00, 0xffffffbb]
     show_shape :triangle, x: x, y: 250, size: 100, colors: shades
     # show_shape :triangle, x: x, y: 250, size: 100, colors: shades, angle: 180
   end
 
+  # Draws an animating spaceship graphic
   def show_spaceship
-    # Draws an animating spaceship graphic
     x = Gamework::App.center_x
     add_drawable Spaceship.new spritesheet: asset_path('spaceship.png'), y: 400, scale: 1
   end
 
+  # Create menu with options
   def show_menu
-    # Create menu with options
     x = Gamework::App.center_x - 160
     @menu = Gamework::Menu.new x: x, y: 480, width: 300, margin: 10, padding: 10
     @menu.add_option "Start Game"
@@ -89,9 +89,8 @@ class SpaceScene < Gamework::Scene
     gather_stars
   end
 
+  # Maps WASD to directions
   def map_direction_key(dir)
-    # Maps WASD to directions
-
     map = {w: 'up', a: 'left', d: 'right'}
     map[dir.intern] || dir
   end
@@ -108,10 +107,9 @@ class SpaceScene < Gamework::Scene
     @player.decelerate
   end
 
+  # Adds a new star in a random
+  # location within the viewport
   def add_star
-    # Adds a new star in a random
-    # location within the viewport
-
     x = @camera_x + rand(Gamework::App.width-48-@camera_x)
     y = @camera_y + rand(Gamework::App.height-48-@camera_y)
     star = show_shape :square, image: asset_path('star.png'), size: 48, position: [x,y], center: true, color: random_color
@@ -126,11 +124,10 @@ class SpaceScene < Gamework::Scene
     color
   end
 
+  # Adds one star per second over the 
+  # course of 3 seconds, up to
+  # 10 stars max
   def update_stars
-    # Adds one star per second over the 
-    # course of 3 seconds, up to
-    # 10 stars max
-
     @star_timeout ||= 0
     @star_timeout += 1
     if @star_timeout == 60*3
@@ -139,10 +136,9 @@ class SpaceScene < Gamework::Scene
     end
   end
 
+  # Collect points for stars that are touched
+  # and delete them from the page
   def gather_stars
-    # Collect points for stars that are touched
-    # and delete them from the page
-
     @stars.select {|s| @player.touch?(s)}.each do |s|
       @score += 100
       @stars.delete(s)

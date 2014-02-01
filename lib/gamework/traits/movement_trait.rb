@@ -1,7 +1,8 @@
+# Adds basic four way directional
+# movement functionality
+
 module Gamework
   module MovementTrait
-    # Adds basic four way directional
-    # movement functionality
 
     def initialize_movement
       @speed     ||= 3
@@ -20,10 +21,9 @@ module Gamework
       @direction = direction
     end
 
+    # Turn direction and move a
+    # distance of @speed pixels
     def move(direction)
-      # Turn direction and move a
-      # distance of @speed pixels
-
       turn direction unless @dir_fixed
       return(stop) if scene_collision?
       
@@ -55,10 +55,9 @@ module Gamework
       !!@solid
     end
 
+    # Returns a nested array containing
+    # coordinates of an object's hitbox
     def hitbox(offset_x=0, offset_y=0)
-      # Returns a nested array containing
-      # coordinates of an object's hitbox
-
       start_x  = left_x   + offset_x
       end_x    = right_x  + offset_x
       start_y  = top_y    + offset_y
@@ -66,11 +65,10 @@ module Gamework
       hitbox_a = [(start_x..end_x).to_a, (start_y..end_y).to_a]
     end
 
+    # Returns true if self is facing the
+    # object it's touching, preventing
+    # it from moving forward.
     def collide?(object)
-      # Returns true if self is facing the
-      # object it's touching, preventing
-      # it from moving forward.
-
       return false if object == self
 
       hitbox_a = case @direction
@@ -90,10 +88,9 @@ module Gamework
       (hitbox_a[1] & hitbox_b[1]).any?
     end
 
+    # Checks all objects on a scene to
+    # see if there is a collision
     def scene_collision?
-      # Checks all objects on a scene to
-      # see if there is a collision
-
       return false unless solid?
       scene = Gamework::App.current_scene
       return false if scene.nil?
@@ -101,11 +98,10 @@ module Gamework
       scene.solid_objects.any? {|object| collide?(object)}
     end
 
+    # Creates threads for new movements
+    # to update in parallel to other
+    # processes
     def update_auto_movement
-      # Creates threads for new movements
-      # to update in parallel to other
-      # processes
-
       return if @movement[:moving]
       distance = @movement[:distance] || @width
       delay    = @movement[:delay]    || 1
@@ -114,10 +110,9 @@ module Gamework
       end
     end
 
+    # Move between 0 to 2 steps in a
+    # random direction with a given delay
     def random_movement(distance, delay)
-      # Move between 0 to 2 steps in a
-      # random direction with a given delay
-
       @movement[:moving] = true
       # Random direction
       dir = %w(up down left right)[rand(4)]
@@ -147,10 +142,9 @@ module Gamework
     #   # should mirror move_towards(target)
     # end
 
+    # Moves a given distance over 1
+    # second based on the actor's speed
     def step(distance)
-      # Moves a given distance over 1
-      # second based on the actor's speed
-
       i = 0
       t = 1/(distance.to_f/@speed.to_f)
       while i < distance

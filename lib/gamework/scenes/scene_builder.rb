@@ -53,7 +53,7 @@ module Gamework
       name = data.delete(:name)
       data[:spritesheet] = asset_path(data[:spritesheet]) if data[:spritesheet]
       drawable = @scene.create_drawable(data, type)
-      @scene.follow_with_camera(drawable) if data[:follow]
+      @scene.follow(drawable) if data[:follow]
       @scene.instance_variable_set "@#{name}", drawable if name
     end
 

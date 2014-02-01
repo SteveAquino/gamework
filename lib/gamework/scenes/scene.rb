@@ -71,9 +71,8 @@ module Gamework
       # Fixed visualizations go here (HUD, ect...)
       visible_drawables.select(&:fixed?).map(&:draw)
 
+      # Objects that scroll with the camera go here
       draw_relative do
-        # Objects that scroll with the camera go here
-
         visible_drawables.reject(&:fixed?).map(&:draw)
         @tileset.draw if @tileset
       end
@@ -95,6 +94,7 @@ module Gamework
     end
 
     def end_scene
+      return false if @finished
       do_transition(transition_options[:end]) if transition_options.try(:[], :end)
       @finished = true
     end
@@ -125,15 +125,22 @@ module Gamework
       Gamework::App.quit
     end
 
-    def follow_with_camera(target)
+    # Sets the camera target to a given
+    # object to track it with the camera
+    def follow(target)
       @camera_target = target
     end
 
-    def update_camera(target)
-      # Updates the camera to follow a given
-      # Drawable on the screen within the
-      # boundaries of the tileset
+    # Stop following any targets with
+    # the camera
+    def unfollow
+      @camera_target = nil
+    end
 
+    # Updates the camera to follow a given
+    # Drawable on the screen within the
+    # boundaries of the tileset
+    def update_camera(target)
       half_width  = Gamework::App.center_x
       half_height = Gamework::App.center_y
       

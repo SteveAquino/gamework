@@ -108,6 +108,8 @@ describe Gamework::Drawable do
       end
       guy = SweetGuy.new
       guy.say_something_sweet.should eq('sweet')
+
+      Object.send(:remove_const, :SweetGuy)
     end
 
     it "includes namespaced modules" do
@@ -116,6 +118,7 @@ describe Gamework::Drawable do
       end
       ball = Ball.new
       ball.respond_to?(:accelerate).should be_true
+      Object.send(:remove_const, :Ball)
     end
   end
 

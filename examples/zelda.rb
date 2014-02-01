@@ -68,9 +68,8 @@ class MapScene < Gamework::Scene
   # Load scene from yaml file
   build_scene "examples/zelda.yaml"
 
+  # Maps WASD to directions
   def map_direction_key(dir)
-    # Maps WASD to directions
-
     map = {w: 'up', s: 'down', a: 'left', d: 'right'}
     map[dir.intern] || dir
   end

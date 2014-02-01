@@ -37,8 +37,9 @@ describe Gamework::SceneBuilder do
     it "saves drawable as an instance variable" do
       drawable = Gamework::Drawable.new
       scene.stub(:create_drawable).and_return(drawable)
-      builder.build_drawable('drawable', x: 10, y: 10, name: 'cool_guy')
+      builder.build_drawable('drawable', x: 10, y: 10, name: 'cool_guy', follow: true)
       expect(scene.instance_variable_get("@cool_guy")).to eq(drawable)
+      expect(scene.instance_variable_get("@camera_target")).to eq(drawable)
     end
   end
 

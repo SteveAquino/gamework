@@ -42,10 +42,6 @@ module Gamework
     def _initialize; end
     def draw; end
     def update; end
-
-    def set_position(x, y)
-      @x, @y = x, y
-    end
     
     def pos?(x, y)
       [@x, @y] == [x, y]
@@ -65,6 +61,10 @@ module Gamework
 
     def right?(drawable)
       self.x > drawable.x
+    end
+
+    def set_position(x, y)
+      @x, @y = x, y
     end
 
     def resize(width, height)
@@ -206,16 +206,20 @@ module Gamework
       include(module_name)
 
       # Extend initialize, update, and draw
-      method = name.to_s.split("::").last.downcase
-      if module_name.instance_methods.include?("initialize_#{method}".intern)
-        extend_method("_initialize", "initialize_#{method}")
-      end
-      if module_name.instance_methods.include?("update_#{method}".intern)
-        extend_method("update", "update_#{method}")
-      end
-      if module_name.instance_methods.include?("draw_#{method}".intern)
-        extend_method("draw", "draw_#{method}")
+      method_suffix = name.to_s.split("::").last.downcase
+      %w(initialize update draw).each do |base_method|
+
+        # Appends the module name to the base_method,
+        # eg: initialize_movement
+        joined_method = "#{base_method}_#{method_suffix}"
+        if module_name.instance_methods.include?(joined_method.intern)
+          # Call the joined_method after the base_method,
+          # eg: initialize_movement will be called after
+          # initialize is run
+          extend_method(base_method, joined_method)
+        end
       end
     end
+
   end
 end

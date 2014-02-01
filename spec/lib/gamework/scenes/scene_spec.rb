@@ -2,6 +2,7 @@ require_relative '../../../spec_helper'
  
 describe Gamework::Scene do
   let(:scene) { Gamework::Scene.new }
+  let(:drawable) { scene.add_drawable(Gamework::Drawable.new) }
 
   before(:each) do
     Gamework::App.stub(:width)  { 100 }
@@ -13,8 +14,8 @@ describe Gamework::Scene do
   describe "hook methods" do
     describe "#update" do
       it "calls #before_update and #after_update" do
-        scene.should_receive(:before_update)
-        scene.should_receive(:after_update)
+        expect(scene).to receive(:before_update)
+        expect(scene).to receive(:after_update)
         scene.update
       end
     end
@@ -22,9 +23,34 @@ describe Gamework::Scene do
     describe "#draw" do
       it "calls #before_draw and #after_draw" do
         scene.stub(:draw_relative)
-        scene.should_receive(:before_draw)
-        scene.should_receive(:after_draw)
+        expect(scene).to receive(:before_draw)
+        expect(scene).to receive(:after_draw)
         scene.draw
+      end
+    end
+
+    describe "#inside_viewport?" do
+      it "returns true if an object is inside the viewport" do
+        expect(scene.inside_viewport? drawable).to be_true
+        drawable.set_position 101, 101
+        expect(scene.inside_viewport? drawable).to be_false
+      end
+    end
+
+    describe "#end_scene"
+
+    describe "#follow" do
+      it "assigns a camera target" do
+        scene.follow drawable
+        expect(scene.instance_variable_get "@camera_target").to be(drawable)
+      end
+    end
+
+    describe "#unfollow" do
+      it "clears the camera target" do
+        scene.follow drawable
+        scene.unfollow
+        expect(scene.instance_variable_get "@camera_target").to be_nil
       end
     end
   end
@@ -33,12 +59,12 @@ describe Gamework::Scene do
     it "adds drawables to the drawables array" do
       drawable = Gamework::Drawable.new x: 10, y: 10
       scene.add_drawable drawable
-      scene.drawables.should eq([drawable])
+      expect(scene.drawables).to eq([drawable])
     end
 
     it "can be aliased as <<" do
       drawable = Gamework::Drawable.new x: 10, y: 10, fixed: true
-      scene.should_receive(:add_drawable).with(drawable)
+      expect(scene).to receive(:add_drawable).with(drawable)
       scene << drawable
     end
   end
@@ -49,13 +75,13 @@ describe Gamework::Scene do
       Gamework::Tileset.any_instance.stub(:make_tiles)
       scene.create_tileset("test.txt", 32, 32, "test.png")
 
-      scene.tileset.should_not be_nil
+      expect(scene.tileset).to_not be_nil
     end
   end
 
   describe "#create_drawable" do
     it "calls add_drawable with given arguments" do
-      scene.should_receive(:add_drawable)
+      expect(scene).to receive(:add_drawable)
       scene.create_drawable x: 10, y: 10
     end
 
@@ -63,7 +89,7 @@ describe Gamework::Scene do
       class CustomDrawable
         def initialize(options); end;
       end
-      scene.should_receive(:add_drawable)
+      expect(scene).to receive(:add_drawable)
       scene.create_drawable({x: 10, y: 10}, 'custom_drawable')
     end
   end
