@@ -97,6 +97,7 @@ describe Gamework::Drawable do
   end
 
   describe ".trait" do
+
     it "dynamically includes a Trait module" do
       module SweetnessTrait
         def say_something_sweet
@@ -117,7 +118,32 @@ describe Gamework::Drawable do
         trait 'gamework::physics'
       end
       Ball.new.respond_to?(:accelerate).should be_true
+
       Object.send(:remove_const, :Ball)
+    end
+  end
+
+  describe ".attributes" do
+    before(:each) do
+      class Ball < Gamework::Drawable
+        attributes x: 100, y: 200, custom: 'value'
+      end
+    end
+
+    after(:each) { Object.send(:remove_const, :Ball) }
+
+    it "specifies default attributes for new instances" do
+      ball = Ball.new
+      expect(ball.x).to eq(100)
+      expect(ball.y).to eq(200)
+      expect(ball.custom).to eq('value')
+    end
+
+    it "defines attributes that can be set at initialization" do
+      ball = Ball.new x: 200, y: 300, custom: 'other'
+      expect(ball.x).to eq(200)
+      expect(ball.y).to eq(300)
+      expect(ball.custom).to eq('other')
     end
   end
 

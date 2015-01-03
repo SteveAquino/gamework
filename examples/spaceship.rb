@@ -2,6 +2,12 @@ require 'rubygems'
 require 'gamework'
 require 'pry'
 
+Gamework::App.config do |c|
+  c.width  = 800
+  c.height = 640
+  c.title  = "Ruby Spaceship"
+end
+
 class TitleScene < Gamework::Scene
   has_assets "spec/media"
   on_button_down 'escape', 'kb', :quit
@@ -29,7 +35,6 @@ class TitleScene < Gamework::Scene
 
   # Draws an animating spaceship graphic
   def show_spaceship
-    x = Gamework::App.center_x
     add_drawable Spaceship.new spritesheet: asset_path('spaceship.png'), y: 400, scale: 1
   end
 
@@ -154,17 +159,12 @@ class Spaceship < Gamework::Drawable
   trait 'gamework::physics'
   trait 'gamework::wrap'
 
-  def initialize(options={})
-    settings = {
-      x: Gamework::App.center_x,
-      y: Gamework::App.center_y,
-      width: 43,
-      height: 43,
-      scale: 2,
-      animating: true
-    }
-    super settings.merge(options)
-  end
+  attributes x: Gamework::App.center_x,
+             y: Gamework::App.center_y,
+             width: 43,
+             height: 43,
+             scale: 2,
+             animating: true
 
   def turn(dir)
     case dir.intern
@@ -174,12 +174,6 @@ class Spaceship < Gamework::Drawable
       rotate(4.5)
     end
   end
-end
-
-Gamework::App.config do |c|
-  c.width  = 800
-  c.height = 640
-  c.title  = "Ruby Spaceship"
 end
 
 Gamework::App.start do

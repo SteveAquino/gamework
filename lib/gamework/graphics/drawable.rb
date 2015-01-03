@@ -30,6 +30,18 @@ require "active_support/core_ext/string/inflections"
 
 module Gamework
   class Drawable
+    # The base options that all instances of
+    # Drawable get by default
+    BASE_OPTIONS = {
+      x: 0,
+      y: 0,
+      z: 0,
+      width:  1,
+      height: 1,
+      scale:  1,
+      angle:  0,
+      fixed:  false
+    }
 
     # Set starting attributes with defaults,
     # load any _initialize hooks
@@ -138,17 +150,13 @@ module Gamework
 
     private
 
+    # Logs the class and given options
+    def announce(options={})
+      Gamework::App.logger.info "#{self.class}".yellow.bold, "{" + options.map {|k,v| "#{k}: #{v}"}.join(", ") + "}"
+    end
+
     def default_options
-      @defaults ||= {
-        x: 0,
-        y: 0,
-        z: 0,
-        width:  1,
-        height: 1,
-        scale:  1,
-        angle:  0,
-        fixed:  false
-      }
+      Drawable::BASE_OPTIONS.merge(self.class._attributes)
     end
 
     # Creates attributes from a hash
@@ -172,11 +180,6 @@ module Gamework
     def create_writeable_attribute(name, value=nil)
       self.class.send :attr_writer, name
       instance_variable_set "@#{name}", value
-    end
-
-    # Logs the class and given options
-    def announce(options={})
-      Gamework::App.logger.info "#{self.class}".yellow.bold, "{" + options.map {|k,v| "#{k}: #{v}"}.join(", ") + "}"
     end
 
     # Aliases a method and adds a new
@@ -219,6 +222,15 @@ module Gamework
           extend_method(base_method, joined_method)
         end
       end
+    end
+
+    # Set initial attributes for new instances
+    def self.attributes(options)
+      @attributes = options
+    end
+
+    def self._attributes
+      @attributes ||= {}
     end
 
   end

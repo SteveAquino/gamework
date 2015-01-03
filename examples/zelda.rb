@@ -89,16 +89,10 @@ class Link < Gamework::Drawable
   trait 'gamework::movement'
   trait 'gamework::animated_sprite'
 
-  def initialize(options={})
-    settings = {
-      width:  30,
-      height: 30,
-      scale:  2,
-      split_sprites: true
-    }
-    super settings.merge(options)
-  end
-
+  attributes width:  30,
+             height: 30,
+             scale:  2,
+             split_sprites: true
 end
 
 Gamework::App.config do |c|
