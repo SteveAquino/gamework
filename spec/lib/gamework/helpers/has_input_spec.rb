@@ -66,7 +66,7 @@ describe Gamework::HasInput do
   describe "#call_block_or_array" do
     it 'takes a block argument and maps it correctly' do
       called = false
-      MockController.new.call_block_or_array -> { called = true }
+      MockController.new.call_block_or_array Proc.new { called = true }
       called.should be_true
     end
 

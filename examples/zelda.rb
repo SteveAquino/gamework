@@ -4,7 +4,7 @@ require 'pry'
 
 # Opening Title Scene
 class StartScene < Gamework::Scene
-  has_assets "spec/media"
+  has_assets 'spec/media'
   on_button_down 'escape', 'kb', :quit
   on_button_down 'return', 'kb', :select_option
   on_button_up ['up', 'down'], 'kb', :move_cursor
@@ -103,6 +103,4 @@ Gamework::App.config do |c|
   c.title  = "Simple Zelda"
 end
 
-Gamework::App.start do
-  Gamework::App << 'start'
-end
+Gamework::App.start! 'start'

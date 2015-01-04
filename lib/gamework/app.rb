@@ -1,22 +1,20 @@
 require "active_support/core_ext/string/inflections"
 
+# The Gamework::App module bridges the gap between
+# the current window, player input, and the current
+# scene.  There is a pointer to a single instance
+# of a window and the current scene.  Scenes can
+# be prepared before the game loads or during
+# exectution of another Scene.
+
+# This singleton contains the only reference
+# to a Gosu::Window instance, required for many
+# of the library's functions.
 module Gamework
   module App
-    # The Gamework::App module bridges the gap between
-    # the current window, player input, and the current
-    # scene.  There is a pointer to a single instance
-    # of a window and the current scene.  Scenes can
-    # be prepared before the game loads or during
-    # exectution of another Scene.
-
-    # This singleton contains the only reference
-    # to a Gosu::Window instance, required for many
-    # of the library's functions.
-
     @@scenes = []
 
     class << self
-
       @showing = false
       attr_reader :window, :logger
       attr_accessor :width, :height, :fullscreen, :debug, :title, :caption, :log_file
@@ -81,24 +79,17 @@ module Gamework
       end
 
       # Creates a new window and starts
-      # the main game loop with an optional
-      # block called before.
-      def start
-        # Don't allow the game to start twice
+      # the main game loop with the first
+      # scene as the argument.
+      def start!(scene)
         raise "The game has already started." if showing?
 
         Gamework::ENV ||= 'development'
-        # Make logger and start game
         make_logger(@log_file)
         @logger.info 'Starting the game'
 
-        # Allow optional before block
-        yield if block_given?
-
-        @logger.info 'Opening a native window'
         make_window
-
-        @logger.info 'Starting render loop'
+        add_scene(scene)
         show
       end
 
@@ -135,7 +126,6 @@ module Gamework
 
       def add_scene(scene)
         if scene.kind_of? String
-          # Convert strings to classes
           scene = string_to_scene_class(scene)
         end
         @@scenes.push(scene.new)
@@ -149,52 +139,28 @@ module Gamework
     		current_scene and current_scene.end_scene
       end
 
+      # End the current scene and
+      # load another into the array
       def next_scene(scene)
-        # End the current scene and
-        # load another into the array
-
         end_current_scene
         add_scene(scene)
       end
 
+      # Converts a string into a scene class
       def string_to_scene_class(string)
-        # Converts a string into a scene class
-
         base = string.titleize.gsub(' ', '')
         "#{base}Scene".constantize
       end
-
-      # Define class level accessor methods for
-      # easy configuration settings, but raise
-      # error if the window is already drawn
 
       def raise_config_error
         raise "Can't set configuration settings after the game has started."
       end
 
-      def width=(val)
-        raise_config_error if showing?
-        @width = val
-      end
-
-      def height=(val)
-        raise_config_error if showing?
-        @height = val
-      end
-
-      def fullscreen=(val)
-        raise_config_error if showing?
-        @fullscreen = val
-      end
-
-      def title=(val)
-        raise_config_error if showing?
-        @title = val
-      end
-
-      def log_file=(val)
-        raise_config_error if showing?
-        @log_file = val
+      %w(width height fullscreen title log_file debug).each do |meth|
+        define_method "#{meth}=" do |val|
+          raise_config_error if showing?
+          instance_variable_set "@#{meth}", val
+        end
       end
 
       def caption=(val)
@@ -204,11 +170,6 @@ module Gamework
 
       def debug_mode?
         !!@debug
-      end
-
-      def debug=(val)
-        raise_config_error if showing?
-        @debug = val
       end
 
       def center_x

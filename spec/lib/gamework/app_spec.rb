@@ -99,29 +99,19 @@ describe Gamework::App do
     end
   end
 
-  describe ".start" do
-    it "creates a window object and calls show" do
+  describe ".start!" do
+    it "prepares the game window, first scene, and calls .show" do
       Gamework::App.stub("showing?").and_return(false)
-      expect(Gamework::App).to receive(:make_window)
       expect(Gamework::App).to receive(:make_logger)
+      expect(Gamework::App).to receive(:make_window)
+      expect(Gamework::App).to receive(:add_scene).with('test')
       expect(Gamework::App).to receive(:show)
-      Gamework::App.start
+      Gamework::App.start!('test')
     end
 
     it "raises an error if called twice" do
       Gamework::App.stub("showing?").and_return(true)
-      expect {Gamework::App.start}.to raise_error
-    end
-
-    it "takes a block argument that is called before window is shown" do
-      Gamework::App.stub("showing?").and_return(false)
-      Gamework::App.stub(:make_window)
-      Gamework::App.stub(:make_logger)
-      Gamework::App.stub(:show)
-      
-      @called = false
-      Gamework::App.start { @called = true }
-      expect(@called).to be_true
+      expect {Gamework::App.start!('test')}.to raise_error
     end
   end
 

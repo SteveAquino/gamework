@@ -176,6 +176,4 @@ class Spaceship < Gamework::Actor::Base
   end
 end
 
-Gamework::App.start do
-  Gamework::App << 'title'
-end
+Gamework::App.start! 'title'

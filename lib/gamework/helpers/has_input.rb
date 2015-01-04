@@ -60,7 +60,7 @@ module Gamework
           send(block_or_array[0])
         end
       elsif block_or_array.kind_of?(Proc)
-        block_or_array.call
+        block_or_array.call(self)
       end
     end
 
@@ -82,23 +82,23 @@ module Gamework
 
     module ClassMethods
       def on_button_down(ids, source='kb', method_name=nil, &block)
-        register_callback(button_down_mapping, ids, source, method_name)
+        register_callback(button_down_mapping, ids, source, method_name, block)
       end
 
       def on_button_up(ids, source='kb', method_name=nil, &block)
-        register_callback(button_up_mapping, ids, source, method_name)
+        register_callback(button_up_mapping, ids, source, method_name, block)
       end
 
-      def on_button_toggle(ids, source='kb', down_method, up_method)
-        register_callback(button_down_mapping, ids, source, down_method)
-        register_callback(button_up_mapping, ids, source, up_method)
+      def on_button_toggle(ids, source='kb', down_method, up_method, &block)
+        register_callback(button_down_mapping, ids, source, down_method, block)
+        register_callback(button_up_mapping, ids, source, up_method, block)
       end
 
-      def register_callback(mapping, ids, source, method_name, &block)
+      def register_callback(mapping, ids, source, method_name, block=nil)
         ids = [ids] unless ids.kind_of?(Array)
         ids.each do |id|
           key = gosu_button_id(id, source)
-          if block_given?
+          if block
             # Map anonymous block
             mapping[key] = block
           elsif method_name
