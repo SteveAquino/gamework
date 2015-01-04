@@ -76,7 +76,7 @@ describe Gamework::App do
 
   describe ".make_logger" do
     it "creates a new instance of Gamework::Logger" do
-      logger = Gamework::App.make_logger('my_logfile.txt')
+      logger = Gamework::App.make_logger('my_logfile.log')
       expect(logger.kind_of? Gamework::Logger).to be_true
     end
   end
