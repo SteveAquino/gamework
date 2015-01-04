@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+
+require 'gamework'
+require 'thor'
+
+class Gamework::Cli < Thor
+  include Thor::Actions
+
+  desc "start", "Starts the game"
+  def start
+    run "./bin/run"
+  end
+
+  desc "console", "Starts an interactive console session"
+  def console
+    run "./bin/console"
+  end
+end
+
+Gamework::Cli.start

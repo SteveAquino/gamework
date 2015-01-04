@@ -207,9 +207,11 @@ module Gamework
         # Titleize turns :: into /, so we'll
         # convert back and to allow namespaced
         # trait modules
-
         base = name.to_s.titleize.gsub('/','::').gsub(' ', '')
         module_name = "#{base}Trait".constantize
+
+        # Don't load modules twice
+        return if included_modules.include? module_name
         include(module_name)
 
         # Extend _initialize, update, and draw

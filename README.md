@@ -8,17 +8,22 @@ build.
 
 ## Installation
 
-Add this line to your application's Gemfile:
+First install the gem:
 
-    gem 'gamework'
+    gem install gamework
 
-And then execute:
+Then initialize a new app:
 
-    $ bundle
+    bundle exec gamework new my-app
 
-Or install it yourself as:
+Finally, cd into your app and start:
 
-    $ gem install gamework
+    cd my-app
+    bundle exec gamework start
+
+You can also run the developer console inside your app:
+
+    bundle exec gamework console
 
 ## Usage
 
