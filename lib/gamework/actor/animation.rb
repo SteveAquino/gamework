@@ -1,5 +1,5 @@
 module Gamework
-  class Animation < Gamework::Drawable
+  class Animation < Gamework::Actor::Base
 
     def initialize(options={})
       defaults = {

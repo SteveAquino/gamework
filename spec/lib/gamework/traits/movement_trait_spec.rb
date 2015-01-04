@@ -2,7 +2,7 @@ require_relative '../../../spec_helper'
 
 describe Gamework::MovementTrait do
   before(:each) do
-    class Ball < Gamework::Drawable
+    class Ball < Gamework::Actor::Base
       trait 'gamework::movement'
     end
   end

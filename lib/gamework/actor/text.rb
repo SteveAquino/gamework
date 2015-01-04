@@ -1,5 +1,5 @@
 module Gamework
-  class Text < Gamework::Drawable
+  class Text < Gamework::Actor::Base
     # Represents on screen game text using
     # Gosu::Font and Drawable methods
     #

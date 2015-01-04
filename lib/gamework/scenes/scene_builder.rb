@@ -32,9 +32,9 @@ module Gamework
         elsif type == "tileset"
           build_tileset data.symbolize_keys
         elsif data.kind_of?(Array)
-          data.each {|d| build_drawable(type, d.symbolize_keys) }
+          data.each {|d| build_actor(type, d.symbolize_keys) }
         else
-          build_drawable type, data.symbolize_keys
+          build_actor type, data.symbolize_keys
         end
       end
     end
@@ -49,12 +49,12 @@ module Gamework
       @scene.create_tileset *data.values
     end
 
-    def build_drawable(type, data)
+    def build_actor(type, data)
       name = data.delete(:name)
       data[:spritesheet] = asset_path(data[:spritesheet]) if data[:spritesheet]
-      drawable = @scene.create_drawable(data, type)
-      @scene.follow(drawable) if data[:follow]
-      @scene.instance_variable_set "@#{name}", drawable if name
+      actor = @scene.create_actor(data, type)
+      @scene.follow(actor) if data[:follow]
+      @scene.instance_variable_set "@#{name}", actor if name
     end
 
     def asset_path(path)

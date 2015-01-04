@@ -5,7 +5,7 @@ tileset:
   tile_size: 30
   spritesheet: 'tileset.png'
   mapfile: 'map.txt'
-drawable:
+actor:
   x: 10
   y: 10
   name: 'player'

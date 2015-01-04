@@ -12,7 +12,7 @@ module Gamework
     include Gamework::HasInput
 
     @scene_file = nil
-    attr_reader :tileset, :drawables, :paused
+    attr_reader :tileset, :actors, :paused
 
     def initialize
       # The scrolling position is relative to the
@@ -21,7 +21,7 @@ module Gamework
       @camera_y  = 0
       @paused    = false
       @built     = false
-      @drawables = []
+      @actors = []
     end
 
     # Delay building scene until it's
@@ -56,7 +56,7 @@ module Gamework
 
       update_input
       update_camera(@camera_target) if @camera_target
-      update_drawables
+      update_actors
 
       after_update
     end
@@ -64,16 +64,16 @@ module Gamework
     def draw
       # Optimize visual calculations by only
       # drawing options inside the viewport
-      visible_drawables = @drawables.select {|d| inside_viewport?(d) }
+      visible_actors = @actors.select {|d| inside_viewport?(d) }
       
       before_draw
 
       # Fixed visualizations go here (HUD, ect...)
-      visible_drawables.select(&:fixed?).map(&:draw)
+      visible_actors.select(&:fixed?).map(&:draw)
 
       # Objects that scroll with the camera go here
       draw_relative do
-        visible_drawables.reject(&:fixed?).map(&:draw)
+        visible_actors.reject(&:fixed?).map(&:draw)
         @tileset.draw if @tileset
       end
 
@@ -138,7 +138,7 @@ module Gamework
     end
 
     # Updates the camera to follow a given
-    # Drawable on the screen within the
+    # actor on the screen within the
     # boundaries of the tileset
     def update_camera(target)
       half_width  = Gamework::App.center_x
@@ -155,18 +155,18 @@ module Gamework
     end
 
     def solid_objects
-      # Returns all drawables that respond
+      # Returns all actors that respond
       # to solid? and return true
 
-      @drawables.select {|d| d.respond_to?(:solid?) && d.solid?}.compact
+      @actors.select {|d| d.respond_to?(:solid?) && d.solid?}.compact
     end
 
-    def update_drawables
+    def update_actors
       # Remove objects marked for deletion
-      @drawables.delete_if(&:delete?)
+      @actors.delete_if(&:delete?)
       # Fixed objects always get updated
       # Only update unfixed objects inside the viewport
-      @drawables.each {|d| d.update if d.fixed? || inside_viewport?(d) }
+      @actors.each {|d| d.update if d.fixed? || inside_viewport?(d) }
     end
 
     # Creation Utility Functions
@@ -176,52 +176,54 @@ module Gamework
       @tileset = Gamework::Tileset.create(mapfile, *args)
     end
 
-    # Creates a new drawable instance of a given type
+    # Creates a new actor instance of a given type
     # and adds it to the collection
-    def create_drawable(options={}, type='drawable')
-      base = type.titleize.gsub('/','::').gsub(' ', '')
-      if Gamework.const_defined?(base) and !Object.const_defined?(base)
-        base.prepend("Gamework::")
-      end
-      class_name = base.constantize
-      add_drawable class_name.new(options)
+    def create_actor(options={}, type='actor')
+      name = type.titleize.gsub('/', '::').gsub(' ', '')
+      base = name.split('::').first.intern
+
+      name.prepend("Gamework::") if Gamework.constants.include? base
+      name += "::Base" if name.constantize.constants.include? :Base
+
+      klass = name.constantize
+      add_actor klass.new(options)
     end
 
     # Adds a new Gamework::Text to the collection
     def show_text(text, options={})
-      add_drawable Gamework::Text.new(text, options)
+      add_actor Gamework::Text.new(text, options)
     end
 
     # Adds a new Gamework::Shape to the collection
     def show_shape(type, options={})
-      add_drawable Gamework::Shape.new(type, options)
+      add_actor Gamework::Shape.new(type, options)
     end
 
     # Adds a new Gamework::Animation to the collection
     def show_animation(options={})
-      add_drawable Gamework::Animation.new(options)
+      add_actor Gamework::Animation.new(options)
     end
 
     # Draws a :background type shape
-    # below other drawables
+    # below other actors
     def draw_background(options={})
       settings = {z: -1, fixed: true}.merge(options)
       show_shape(:background, settings)
     end
 
-    # Adds a drawable to the collection
-    def add_drawable(drawable)
-      @drawables << drawable
-      return drawable
+    # Adds a actor to the collection
+    def add_actor(actor)
+      @actors << actor
+      return actor
     end
 
-    def <<(drawable)
-      add_drawable drawable
+    def <<(actor)
+      add_actor actor
     end
 
-    # Removes a drawable object
-    def delete_drawable(drawable)
-      @drawables.delete drawable
+    # Removes a actor object
+    def delete_actor(actor)
+      @actors.delete actor
     end
 
     # Create the scene from a given yaml file
@@ -235,7 +237,7 @@ module Gamework
     # Create new transition instance attached to the scene
     def do_transition(options)
       type = options.delete(:type)
-      @transition = add_drawable Gamework::Transition.new(type, options)
+      @transition = add_actor Gamework::Transition.new(type, options)
     end
 
     class << self

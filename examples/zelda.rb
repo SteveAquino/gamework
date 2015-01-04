@@ -38,7 +38,7 @@ class StartScene < Gamework::Scene
     @menu.add_option "Quit"
     @menu.add_background color: 0xaa000022
     @menu.add_cursor
-    add_drawable @menu
+    add_actor @menu
   end
 
   def move_cursor(dir)
@@ -85,13 +85,15 @@ class MapScene < Gamework::Scene
   end
 end
 
-class Link < Gamework::Drawable
+class Link < Gamework::Actor::Base
+  # has_assets 'spec/media'
   trait 'gamework::movement'
   trait 'gamework::animated_sprite'
 
   attributes width:  30,
              height: 30,
              scale:  2,
+             # spritesheet: 'spritesheet.png',
              split_sprites: true
 end
 

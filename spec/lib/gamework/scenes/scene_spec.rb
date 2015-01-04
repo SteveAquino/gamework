@@ -2,7 +2,7 @@ require_relative '../../../spec_helper'
  
 describe Gamework::Scene do
   let(:scene) { Gamework::Scene.new }
-  let(:drawable) { scene.add_drawable(Gamework::Drawable.new) }
+  let(:actor) { scene.add_actor(Gamework::Actor::Base.new) }
 
   before(:each) do
     Gamework::App.stub(:width)  { 100 }
@@ -31,9 +31,9 @@ describe Gamework::Scene do
 
     describe "#inside_viewport?" do
       it "returns true if an object is inside the viewport" do
-        expect(scene.inside_viewport? drawable).to be_true
-        drawable.set_position 101, 101
-        expect(scene.inside_viewport? drawable).to be_false
+        expect(scene.inside_viewport? actor).to be_true
+        actor.set_position 101, 101
+        expect(scene.inside_viewport? actor).to be_false
       end
     end
 
@@ -41,31 +41,31 @@ describe Gamework::Scene do
 
     describe "#follow" do
       it "assigns a camera target" do
-        scene.follow drawable
-        expect(scene.instance_variable_get "@camera_target").to be(drawable)
+        scene.follow actor
+        expect(scene.instance_variable_get "@camera_target").to be(actor)
       end
     end
 
     describe "#unfollow" do
       it "clears the camera target" do
-        scene.follow drawable
+        scene.follow actor
         scene.unfollow
         expect(scene.instance_variable_get "@camera_target").to be_nil
       end
     end
   end
 
-  describe "#add_drawable" do
-    it "adds drawables to the drawables array" do
-      drawable = Gamework::Drawable.new x: 10, y: 10
-      scene.add_drawable drawable
-      expect(scene.drawables).to eq([drawable])
+  describe "#add_actor" do
+    it "adds actors to the actors array" do
+      actor = Gamework::Actor::Base.new x: 10, y: 10
+      scene.add_actor actor
+      expect(scene.actors).to eq([actor])
     end
 
     it "can be aliased as <<" do
-      drawable = Gamework::Drawable.new x: 10, y: 10, fixed: true
-      expect(scene).to receive(:add_drawable).with(drawable)
-      scene << drawable
+      actor = Gamework::Actor::Base.new x: 10, y: 10, fixed: true
+      expect(scene).to receive(:add_actor).with(actor)
+      scene << actor
     end
   end
 
@@ -79,18 +79,18 @@ describe Gamework::Scene do
     end
   end
 
-  describe "#create_drawable" do
-    it "calls add_drawable with given arguments" do
-      expect(scene).to receive(:add_drawable)
-      scene.create_drawable x: 10, y: 10
+  describe "#create_actor" do
+    it "calls add_actor with given arguments" do
+      expect(scene).to receive(:add_actor)
+      scene.create_actor x: 10, y: 10
     end
 
-    it "builds a drawable of a given type" do
-      class CustomDrawable
+    it "builds a actor of a given type" do
+      class CustomActor
         def initialize(options); end;
       end
-      expect(scene).to receive(:add_drawable)
-      scene.create_drawable({x: 10, y: 10}, 'custom_drawable')
+      expect(scene).to receive(:add_actor)
+      scene.create_actor({x: 10, y: 10}, 'custom_actor')
     end
   end
 
@@ -123,7 +123,7 @@ describe Gamework::Scene do
   describe "#do_transition" do
     it "creates a new Gamework::Transition instance" do
       scene.do_transition type: 'fade_in', duration: 2
-      expect(scene.drawables.first.kind_of? Gamework::Transition).to be_true
+      expect(scene.actors.first.kind_of? Gamework::Transition).to be_true
       expect(scene.transition?).to be_true
     end
   end

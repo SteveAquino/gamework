@@ -1,5 +1,5 @@
 module Gamework
-  class Transition < Gamework::Drawable
+  class Transition < Gamework::Actor::Base
     def initialize(type, options={})
       @type     = type
       @finished = false

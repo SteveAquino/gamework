@@ -4,7 +4,7 @@
 # positioned relative to each other.
 
 module Gamework
-  class Composite < Gamework::Drawable
+  class Composite < Gamework::Actor::Base
     attr_reader :drawables, :fixed
 
     def initialize(options={})

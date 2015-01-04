@@ -35,7 +35,7 @@ class TitleScene < Gamework::Scene
 
   # Draws an animating spaceship graphic
   def show_spaceship
-    add_drawable Spaceship.new spritesheet: asset_path('spaceship.png'), y: 400, scale: 1
+    add_actor Spaceship.new spritesheet: asset_path('spaceship.png'), y: 400, scale: 1
   end
 
   # Create menu with options
@@ -46,7 +46,7 @@ class TitleScene < Gamework::Scene
     @menu.add_option "Quit"
     @menu.add_background color: 0xaa000022
     @menu.add_cursor
-    add_drawable(@menu)
+    add_actor(@menu)
   end
 
   def move_cursor(dir)
@@ -84,7 +84,7 @@ class SpaceScene < Gamework::Scene
     @stars  = []
     @hud    = show_text "Score", x: 5, y: 5, size: 20, fixed: true
     @player = Spaceship.new spritesheet: asset_path('spaceship.png')
-    add_drawable(@player)
+    add_actor(@player)
     draw_background image: asset_path('background.jpg')
   end
 
@@ -154,7 +154,7 @@ class SpaceScene < Gamework::Scene
 
 end
 
-class Spaceship < Gamework::Drawable
+class Spaceship < Gamework::Actor::Base
   trait 'gamework::animated_sprite'
   trait 'gamework::physics'
   trait 'gamework::wrap'

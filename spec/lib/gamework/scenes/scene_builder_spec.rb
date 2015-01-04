@@ -10,7 +10,7 @@ describe Gamework::SceneBuilder do
   describe "#load" do
     it "reads a yaml file and initializes the scene" do
       data = builder.load
-      expect(data.keys).to eq(['song', 'tileset', 'drawable', 'custom'])
+      expect(data.keys).to eq(['song', 'tileset', 'actor', 'custom'])
     end
   end
 
@@ -28,33 +28,33 @@ describe Gamework::SceneBuilder do
     end
   end
 
-  describe "#build_drawable" do
-    it "creates a drawable instance with given options" do
-      expect(scene).to receive(:create_drawable).with({x:10, y:10}, 'drawable')
-      builder.build_drawable('drawable', x: 10, y: 10)
+  describe "#build_actor" do
+    it "creates a actor instance with given options" do
+      expect(scene).to receive(:create_actor).with({x:10, y:10}, 'actor')
+      builder.build_actor('actor', x: 10, y: 10)
     end
 
-    it "saves drawable as an instance variable" do
-      drawable = Gamework::Drawable.new
-      scene.stub(:create_drawable).and_return(drawable)
-      builder.build_drawable('drawable', x: 10, y: 10, name: 'cool_guy', follow: true)
-      expect(scene.instance_variable_get("@cool_guy")).to eq(drawable)
-      expect(scene.instance_variable_get("@camera_target")).to eq(drawable)
+    it "saves actor as an instance variable" do
+      actor = Gamework::Actor::Base.new
+      scene.stub(:create_actor).and_return(actor)
+      builder.build_actor('actor', x: 10, y: 10, name: 'cool_guy', follow: true)
+      expect(scene.instance_variable_get("@cool_guy")).to eq(actor)
+      expect(scene.instance_variable_get("@camera_target")).to eq(actor)
     end
   end
 
   describe "#build_scene" do
     it "delegates correct data to scene" do
-      drawable = Gamework::Drawable.new
+      actor = Gamework::Actor::Base.new
       builder.load
-      scene.stub(:create_drawable).and_return(drawable)
+      scene.stub(:create_actor).and_return(actor)
       expect(scene).to receive(:load_song).with('song.wav', true)
       expect(scene).to receive(:create_tileset).with(30, 'tileset.png', 'map.txt')
-      expect(scene).to receive(:create_drawable).with({x:10, y:10}, 'drawable')
-      expect(scene).to receive(:create_drawable).with({x:10, y:10}, 'custom')
+      expect(scene).to receive(:create_actor).with({x:10, y:10}, 'actor')
+      expect(scene).to receive(:create_actor).with({x:10, y:10}, 'custom')
 
       builder.build_scene
-      expect(scene.instance_variable_get("@player")).to eq(drawable)
+      expect(scene.instance_variable_get("@player")).to eq(actor)
     end
   end
 

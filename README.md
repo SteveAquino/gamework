@@ -1,17 +1,12 @@
-=======
-Gamework
-========
+# Gamework
 
 Gamework is a MVC game making framework built on the
-Ruby Gosu library.  By providing a basic application
-structure and utility methods.  Gamework tries to
+Ruby Gosu library.  While providing a basic application
+structure and utility methods, Gamework tries to
 remain agnostic as to what kind of game you want to
-build. Gamework aims to bring joy to game development
-with Ruby by simplifying common, low level functions.
+build.
 
-=======
-Installation
-========
+## Installation
 
 Add this line to your application's Gemfile:
 
@@ -25,15 +20,15 @@ Or install it yourself as:
 
     $ gem install gamework
 
-=======
-Usage
-========
+## Usage
 
-TODO: Write usage instructions here
+As described, Gamework provides an MVC framework for building games.  The basic components are as follows:
 
-=======
-Contributing
-========
+- **Actors**: Representing the *model* in MVC, actors are the main components and stars of the game.  Instances of models are rendered as graphics on screen, and have attributes such as `width` and `acceleration`.
+- **Maps**: *Coming soon*
+- **Scenes**: *Coming soon*
+
+## Contributing
 
 1. Fork it
 2. Create your feature branch (`git checkout -b my-new-feature`)

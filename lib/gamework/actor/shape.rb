@@ -1,5 +1,5 @@
 module Gamework
-  class Shape < Gamework::Drawable
+  class Shape < Gamework::Actor::Base
     # Creates a basic shape based on
     # given type and options.
 
