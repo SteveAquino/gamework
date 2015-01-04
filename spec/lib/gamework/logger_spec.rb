@@ -57,7 +57,7 @@ describe Gamework::Logger do
     before(:each) { File.stub(:open) { file } }
 
     it "opens up the log file" do
-      expect(File).to receive(:open).with('/home/steve/Gems/gamework/logs.txt', 'a')
+      expect(File).to receive(:open).with(File.expand_path('logs.txt'), 'a')
       logger.send :write_to_log, 'Hi'.yellow, 'logs.txt'
     end
 
