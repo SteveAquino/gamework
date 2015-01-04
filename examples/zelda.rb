@@ -2,9 +2,15 @@ require 'rubygems'
 require 'gamework'
 require 'pry'
 
+Gamework::App.config do |c|
+  c.width  = 800
+  c.height = 640
+  c.title  = "Simple Zelda"
+  c.asset_directory = File.expand_path '../spec/media'
+end
+
 # Opening Title Scene
 class StartScene < Gamework::Scene
-  has_assets 'spec/media'
   on_button_down 'escape', 'kb', :quit
   on_button_down 'return', 'kb', :select_option
   on_button_up ['up', 'down'], 'kb', :move_cursor
@@ -61,13 +67,12 @@ end
 
 # Map Scene
 class MapScene < Gamework::Scene
-  has_assets "spec/media"
   on_button_down 'escape', 'kb', :end_scene
   on_button_toggle ['up', 'down', 'left', 'right'], 'kb', :move_player, :stop_player
   on_button_toggle ['w', 's', 'a', 'd'], 'kb', :move_player, :stop_player
 
   # Load scene from yaml file
-  build_scene "examples/zelda.yaml"
+  build_scene "zelda.yaml"
 
   # Maps WASD to directions
   def map_direction_key(dir)
@@ -86,21 +91,14 @@ class MapScene < Gamework::Scene
 end
 
 class Link < Gamework::Actor::Base
-  # has_assets 'spec/media'
   trait 'gamework::movement'
   trait 'gamework::animated_sprite'
 
   attributes width:  30,
              height: 30,
              scale:  2,
-             # spritesheet: 'spritesheet.png',
+             spritesheet: asset_path('spritesheet.png'),
              split_sprites: true
-end
-
-Gamework::App.config do |c|
-  c.width  = 800
-  c.height = 640
-  c.title  = "Simple Zelda"
 end
 
 Gamework::App.start! 'start'

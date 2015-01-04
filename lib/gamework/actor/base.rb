@@ -22,7 +22,7 @@
 # traits.  Traits dynamically include
 # modules located in your /traits
 # directory with a class name pattern
-# of :TraitName:Trait, eg: module FunTrait.
+# of :TraitNameTrait, eg: module FunTrait.
 # syntax: trait 'trait_name'
 # Include a trait with the following
 
@@ -31,6 +31,9 @@ require "active_support/core_ext/string/inflections"
 module Gamework
   module Actor
     class Base
+      include Gamework::HasAssets
+      include Gamework::HasSound
+
       # The base options that all instances of
       # Actor get by default
       BASE_OPTIONS = {

@@ -6,10 +6,10 @@ Gamework::App.config do |c|
   c.width  = 800
   c.height = 640
   c.title  = "Ruby Spaceship"
+  c.asset_directory = File.expand_path '../spec/media'
 end
 
 class TitleScene < Gamework::Scene
-  has_assets "spec/media"
   on_button_down 'escape', 'kb', :quit
   on_button_down 'return', 'kb', :select_option
   on_button_up ['up', 'down'], 'kb', :move_cursor
@@ -72,7 +72,6 @@ class TitleScene < Gamework::Scene
 end
 
 class SpaceScene < Gamework::Scene
-  has_assets "spec/media"
   on_button_down 'escape', 'kb', :end_scene
   on_button_down ['left', 'right', 'a', 'd'], 'kb', :turn_player
   on_button_down ['up', 'w'], 'kb', :accelerate_player

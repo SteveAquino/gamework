@@ -17,7 +17,8 @@ module Gamework
     class << self
       @showing = false
       attr_reader :window, :logger
-      attr_accessor :width, :height, :fullscreen, :debug, :title, :caption, :log_file
+      attr_accessor :width, :height, :fullscreen, :debug,
+                    :title, :caption, :log_file, :asset_directory
 
       # Delegate update to the current scene,
       # called once per frame
@@ -156,7 +157,7 @@ module Gamework
         raise "Can't set configuration settings after the game has started."
       end
 
-      %w(width height fullscreen title log_file debug).each do |meth|
+      %w(width height fullscreen title log_file asset_directory debug).each do |meth|
         define_method "#{meth}=" do |val|
           raise_config_error if showing?
           instance_variable_set "@#{meth}", val
