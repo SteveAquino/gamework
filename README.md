@@ -24,7 +24,7 @@ Or install it yourself as:
 
 As described, Gamework provides an MVC framework for building games.  The basic components are as follows:
 
-- **Actors**: Representing the *model* in MVC, actors are the main components and stars of the game.  Instances of models are rendered as graphics on screen, and have attributes such as `width` and `acceleration`.
+- [**Actors**](https://github.com/SteveAquino/gamework/tree/master/lib/gamework/actor): Representing the *model* in MVC, actors are the main components and stars of the game.  Instances of models are rendered as graphics on screen, and have attributes such as `width` and `acceleration`.
 - **Maps**: *Coming soon*
 - **Scenes**: *Coming soon*
 
