@@ -6,6 +6,20 @@ require 'thor'
 class Gamework::Cli < Thor
   include Thor::Actions
 
+  attr_reader :gamework_app
+
+  def self.source_root
+    File.expand_path("../../templates", __FILE__)
+  end
+
+  desc "new", "Generates a new gamework application"
+  def new(gamework_app)
+    @gamework_app = gamework_app.dasherize
+    say "Creating new Gamework app: #{@gamework_app}", :green
+    directory "%gamework_app%", @gamework_app
+    run "chmod +x #{@gamework_app}/bin/*"
+  end
+
   desc "start", "Starts the game"
   def start
     run "./bin/run"

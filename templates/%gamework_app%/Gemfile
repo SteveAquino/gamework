@@ -1,0 +1,2 @@
+# gem 'gamework', '0.6.0'
+gem 'gamework', path: '../../gamework'

@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+
+# Load gems and config settings
+require File.expand_path('../../config/environment', __FILE__)
+
+# Similar to reload! in a Rails console
+def reload!
+  puts "Reloading..."
+
+  Dir[File.join(".", "actors", "**/*.rb")].each {|file| load file }
+  Dir[File.join(".", "scenes", "**/*.rb")].each {|file| load file }
+
+  true
+end
+
+# Start an IRB session
+require 'irb'
+ARGV.clear
+IRB.start
