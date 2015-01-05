@@ -6,7 +6,7 @@ Gamework::App.config do |c|
   c.width  = 800
   c.height = 640
   c.title  = "Simple Zelda"
-  c.asset_directory = File.expand_path '../spec/media'
+  c.asset_directory = File.expand_path 'spec/media'
 end
 
 # Opening Title Scene
@@ -72,7 +72,7 @@ class MapScene < Gamework::Scene
   on_button_toggle ['w', 's', 'a', 'd'], 'kb', :move_player, :stop_player
 
   # Load scene from yaml file
-  build_scene "zelda.yaml"
+  build_scene "examples/zelda.yaml"
 
   # Maps WASD to directions
   def map_direction_key(dir)

@@ -6,7 +6,7 @@ Gamework::App.config do |c|
   c.width  = 800
   c.height = 640
   c.title  = "Ruby Spaceship"
-  c.asset_directory = File.expand_path '../spec/media'
+  c.asset_directory = File.expand_path 'spec/media'
 end
 
 class TitleScene < Gamework::Scene
@@ -35,7 +35,7 @@ class TitleScene < Gamework::Scene
 
   # Draws an animating spaceship graphic
   def show_spaceship
-    add_actor Spaceship.new spritesheet: asset_path('spaceship.png'), y: 400, scale: 1
+    add_actor Spaceship.new y: 400
   end
 
   # Create menu with options
@@ -163,7 +163,8 @@ class Spaceship < Gamework::Actor::Base
              width: 43,
              height: 43,
              scale: 2,
-             animating: true
+             animating: true,
+             spritesheet: asset_path('spaceship.png')
 
   def turn(dir)
     case dir.intern

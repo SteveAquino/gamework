@@ -92,6 +92,9 @@ module Gamework
         make_window
         add_scene(scene)
         show
+      rescue Interrupt
+        @logger.info 'Detected exit signal'
+        exit
       end
 
       def exit

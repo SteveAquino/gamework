@@ -50,8 +50,10 @@ module Gamework
       # Set starting attributes with defaults,
       # load any _initialize hooks
       def initialize(options={})
-        announce(options) if Gamework::App.showing?
-        create_attributes default_options.merge(options)
+        settings = default_options.merge(options)
+
+        announce(settings) if Gamework::App.showing?
+        create_attributes settings
         _initialize
       end
 
